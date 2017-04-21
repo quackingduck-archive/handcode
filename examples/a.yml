@@ -1,0 +1,11 @@
+---
+# plain hex chars. spaces ignored, must be byte aligned
+- !hex fe ed fa ce      # feedface
+
+# utf8 strings. quotes are optional, regular escape chars work
+- !utf8 hello           # 68656c6c6f
+- !utf8 " world\n"      # 20776f726c640a
+
+# signed 8bit ints
+- !i8 1                 # 01
+- !i8 -1                # ff

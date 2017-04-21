@@ -22,5 +22,6 @@ this probably rules out very large (how large?) input files
 
 using undocumented `listener` option of js-yaml to detect untagged (or unrecognized tags) input elements in order to detect errors early and provide the user with a line number
 
-
 ---
+
+ints are default signed (twos compliment encoded), so `i8` means signed and `ui8` means unsigned. i think i'm following an informal convention here
