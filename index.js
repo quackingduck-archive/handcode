@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const yaml = require('js-yaml')
 const fs = require('fs')
 // const path = require('path')
@@ -17,18 +19,35 @@ tags.utf8 = new yaml.Type('!utf8', {
   kind: 'scalar',
   resolve: (x) => (x !== null),
   construct: (x) => {
-    // x = x.trim().replace(/\s/g, '')
     return Buffer.from(x, 'utf8')
+  }
+})
+
+tags.i8 = new yaml.Type('!i8', {
+  kind: 'scalar',
+  resolve: (x) => (x !== null),
+  construct: (x) => {
+    const b = Buffer.allocUnsafe(1)
+    // todo: validate? how would we propegate the error back to the error handling code?
+    // todo: support binary notation
+    b.writeInt8(parseInt(x, 10), 0)
+    return b
   }
 })
 
 const schema = yaml.Schema.create([
   tags.hex,
-  tags.utf8
+  tags.utf8,
+  tags.i8
 ])
 
 // risk: stdin closed
 const s = fs.readFileSync('/dev/stdin', 'utf8')
+
+if (s.slice(0, 4) !== '---\n') {
+  console.error('source file must begin with ---')
+  process.exit(1)
+}
 
 try {
   // x is array of buffers,
