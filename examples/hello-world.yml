@@ -1,2 +1,3 @@
 ---
-- !foo `hello world
+- !utf8 hello
+- !utf8 " world\n"

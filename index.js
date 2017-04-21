@@ -13,8 +13,18 @@ tags.hex = new yaml.Type('!hex', {
   }
 })
 
+tags.utf8 = new yaml.Type('!utf8', {
+  kind: 'scalar',
+  resolve: (x) => (x !== null),
+  construct: (x) => {
+    // x = x.trim().replace(/\s/g, '')
+    return Buffer.from(x, 'utf8')
+  }
+})
+
 const schema = yaml.Schema.create([
-  tags.hex
+  tags.hex,
+  tags.utf8
 ])
 
 // risk: stdin closed
