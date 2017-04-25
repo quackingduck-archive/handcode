@@ -73,6 +73,17 @@ const c_ui16be = (s) => {
   return b
 }
 
+const constructors = {
+  c_hex,
+  c_utf8,
+  c_i8,
+  c_i16le,
+  c_ui16le,
+  c_i16be,
+}
+
+Object.assign(module.exports, constructors)
+
 // make schema tag
 const st = (n, c) => (
   new yaml.Type(n, {
@@ -119,15 +130,6 @@ function f (s) {
     if (e.message) console.error(e.message)
     else console.error(e.stack || String(e))
   }
-}
-
-module.exports = {
-  c_hex,
-  c_utf8,
-  c_i8,
-  c_i16le,
-  c_ui16le,
-  c_i16be,
 }
 
 if (require.main === module) {

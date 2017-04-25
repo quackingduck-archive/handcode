@@ -1,25 +1,26 @@
+/* eslint-disable camelcase */
 /* eslint comma-dangle: ["error", "always-multiline"] */
 
 const assert = require('assert')
-const {
-  c_hex,
-  c_utf8,
-  c_i8,
-  c_i16le,
-} = require('./index')
+const constructors = require('./index')
 
 const hb = (x) => new Buffer(x, 'hex')
 
-assert.deepEqual(c_hex('feedface'), hb('feedface'))
-assert.deepEqual(c_hex('feed face'), hb('feedface'))
+function assert_construction (name, s, hs) {
+  const f = constructors['c_' + name]
+  assert.deepEqual(f(s), new Buffer(hs, 'hex'))
+}
 
-assert.deepEqual(c_utf8('hello'), hb('68656c6c6f'))
-assert.deepEqual(c_utf8(' world\n'), hb('20776f726c640a'))
+assert_construction('hex', 'feedface', 'feedface')
+assert_construction('hex', 'feed face', 'feedface')
 
-assert.deepEqual(c_i8('123'), hb('7b'))
-assert.deepEqual(c_i8('1 2 3'), hb('7b'))
-assert.deepEqual(c_i8('1 2 3, 1'), hb('7b01'))
+assert_construction('utf8', 'hello', '68656c6c6f')
+assert_construction('utf8', ' world\n', '20776f726c640a')
 
-assert.deepEqual(c_i16le('255'), hb('ff00'))
+assert_construction('i8', '123', '7b')
+assert_construction('i8', '1 2 3', '7b')
+assert_construction('i8', '1 2 3, 1', '7b01')
+
+assert_construction('i16le', '255', 'ff00')
 
 console.log('ok')
