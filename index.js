@@ -19,59 +19,26 @@ const c_utf8 = (x) => {
   return Buffer.from(x, 'utf8')
 }
 
-const c_i8 = (s) => {
+const _c_int = (s, type, byte_width) => {
   const xs = split(without_whitespace(s))
-  const width = 1
-  const b = Buffer.allocUnsafe(xs.length * width)
+  const b = Buffer.allocUnsafe(xs.length * byte_width)
   let i = 0
-  for (let x of xs) { b.writeInt8(Number(x), i); i += width }
+  for (let x of xs) { b['write' + type](Number(x), i); i += byte_width }
   return b
 }
 
-const c_ui8 = (s) => {
-  const xs = split(without_whitespace(s))
-  const width = 1
-  const b = Buffer.allocUnsafe(xs.length * width)
-  let i = 0
-  for (let x of xs) { b.writeUInt8(Number(x), i); i += width }
-  return b
-}
+const c_i8 = (s) => _c_int(s, 'Int8', 1)
+const c_ui8 = (s) => _c_int(s, 'UInt8', 1)
 
-const c_i16le = (s) => {
-  const xs = split(without_whitespace(s))
-  const width = 2
-  const b = Buffer.allocUnsafe(xs.length * width)
-  let i = 0
-  for (let x of xs) { b.writeInt16LE(Number(x), i); i += width }
-  return b
-}
+const c_i16le = (s) => _c_int(s, 'Int16LE', 2)
+const c_i16be = (s) => _c_int(s, 'Int16BE', 2)
+const c_ui16le = (s) => _c_int(s, 'UInt16LE', 2)
+const c_ui16be = (s) => _c_int(s, 'UInt16BE', 2)
 
-const c_ui16le = (s) => {
-  const xs = split(without_whitespace(s))
-  const width = 2
-  const b = Buffer.allocUnsafe(xs.length * width)
-  let i = 0
-  for (let x of xs) { b.writeUInt16LE(Number(x), i); i += width }
-  return b
-}
-
-const c_i16be = (s) => {
-  const xs = split(without_whitespace(s))
-  const width = 2
-  const b = Buffer.allocUnsafe(xs.length * width)
-  let i = 0
-  for (let x of xs) { b.writeInt16BE(Number(x), i); i += width }
-  return b
-}
-
-const c_ui16be = (s) => {
-  const xs = split(without_whitespace(s))
-  const width = 2
-  const b = Buffer.allocUnsafe(xs.length * width)
-  let i = 0
-  for (let x of xs) { b.writeUInt16BE(Number(x), i); i += width }
-  return b
-}
+const c_i32le = (s) => _c_int(s, 'Int32LE', 4)
+const c_i32be = (s) => _c_int(s, 'Int32BE', 4)
+const c_ui32le = (s) => _c_int(s, 'UInt32LE', 4)
+const c_ui32be = (s) => _c_int(s, 'UInt32BE', 4)
 
 const constructors = {
   c_hex,
@@ -79,9 +46,13 @@ const constructors = {
   c_i8,
   c_ui8,
   c_i16le,
-  c_ui16le,
   c_i16be,
+  c_ui16le,
   c_ui16be,
+  c_i32le,
+  c_i32be,
+  c_ui32le,
+  c_ui32be,
 }
 
 Object.assign(module.exports, constructors)

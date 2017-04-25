@@ -26,4 +26,16 @@ assert_construction('i16be', '-2', 'fffe')
 assert_construction('ui16le', '65534', 'feff')
 assert_construction('ui16be', '65534', 'fffe')
 
+assert_construction('i32le', '-2', 'feffffff')
+assert_construction('i32be', '-2', 'fffffffe')
+
+assert_construction('ui32le', '65534', 'feff0000')
+assert_construction('ui32be', '65534', '0000fffe')
+
+// 64bit ints
+
+// float and doubles
+
+// plain binary bytes
+
 console.log('ok')
