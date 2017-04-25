@@ -6,33 +6,70 @@
 const yaml = require('js-yaml')
 const fs = require('fs')
 
+const without_whitespace = (s) => s.replace(/\s/g, '')
+const split = (s) => s.split(',')
+
 // buffer constructors
 
-const c_hex = (x) => {
-  x = x.trim().replace(/\s/g, '')
-  // todo: error if not hex digits, or not byte aligned
-  return Buffer.from(x, 'hex')
+const c_hex = (s) => {
+  return Buffer.from(without_whitespace(s), 'hex')
 }
 
 const c_utf8 = (x) => {
   return Buffer.from(x, 'utf8')
 }
 
-const c_i8 = (x) => {
-  x = x.replace(/\s/g, '')
-  const xs = x.split(',')
-  const b = Buffer.allocUnsafe(xs.length)
+const c_i8 = (s) => {
+  const xs = split(without_whitespace(s))
+  const width = 1
+  const b = Buffer.allocUnsafe(xs.length * width)
   let i = 0
-  for (x of xs) b.writeInt8(Number(x), i++)
+  for (let x of xs) { b.writeInt8(Number(x), i); i += width }
   return b
 }
 
-const c_ui8 = (x) => {
-  x = x.replace(/\s/g, '')
-  const xs = x.split(',')
-  const b = Buffer.allocUnsafe(xs.length)
+const c_ui8 = (s) => {
+  const xs = split(without_whitespace(s))
+  const width = 1
+  const b = Buffer.allocUnsafe(xs.length * width)
   let i = 0
-  for (x of xs) b.writeUInt8(Number(x), i++)
+  for (let x of xs) { b.writeUInt8(Number(x), i); i += width }
+  return b
+}
+
+const c_i16le = (s) => {
+  const xs = split(without_whitespace(s))
+  const width = 2
+  const b = Buffer.allocUnsafe(xs.length * width)
+  let i = 0
+  for (let x of xs) { b.writeInt16LE(Number(x), i); i += width }
+  return b
+}
+
+const c_i16be = (s) => {
+  const xs = split(without_whitespace(s))
+  const width = 2
+  const b = Buffer.allocUnsafe(xs.length * width)
+  let i = 0
+  for (let x of xs) { b.writeInt16BE(Number(x), i); i += width }
+  return b
+}
+
+const c_ui16le = (s) => {
+  const xs = split(without_whitespace(s))
+  const width = 2
+  const b = Buffer.allocUnsafe(xs.length * width)
+  let i = 0
+  for (let x of xs) { b.writeUInt16LE(Number(x), i); i += width }
+  return b
+}
+
+const c_ui16be = (s) => {
+  const xs = split(without_whitespace(s))
+  const width = 2
+  const b = Buffer.allocUnsafe(xs.length * width)
+  let i = 0
+  for (let x of xs) { b.writeUInt16BE(Number(x), i); i += width }
   return b
 }
 
@@ -50,6 +87,10 @@ const schema = yaml.Schema.create([
   st('!utf8', c_utf8),
   st('!i8', c_i8),
   st('!ui8', c_ui8),
+  st('!i16le', c_i16le),
+  st('!ui16le', c_ui16le),
+  st('!i16be', c_i16be),
+  st('!ui16be', c_ui16be),
 ])
 
 function f (s) {
@@ -84,6 +125,9 @@ module.exports = {
   c_hex,
   c_utf8,
   c_i8,
+  c_i16le,
+  c_ui16le,
+  c_i16be,
 }
 
 if (require.main === module) {

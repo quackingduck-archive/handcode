@@ -28,3 +28,12 @@
 
 # unsigned 8bit ints
 - !ui8 255              # ff                11111111
+
+# signed 16bit little endian ints
+- !i16le -2            # feff               11111110 11111111
+# ... and big endian
+- !i16be -2            # fffe               11111111 11111110
+
+# # and unsigned
+- !ui16le 65534        # feff               11111110 11111111
+- !ui16be 65534        # fffe               11111111 11111110 
