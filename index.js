@@ -46,21 +46,21 @@ const c_i16le = (s) => {
   return b
 }
 
-const c_i16be = (s) => {
-  const xs = split(without_whitespace(s))
-  const width = 2
-  const b = Buffer.allocUnsafe(xs.length * width)
-  let i = 0
-  for (let x of xs) { b.writeInt16BE(Number(x), i); i += width }
-  return b
-}
-
 const c_ui16le = (s) => {
   const xs = split(without_whitespace(s))
   const width = 2
   const b = Buffer.allocUnsafe(xs.length * width)
   let i = 0
   for (let x of xs) { b.writeUInt16LE(Number(x), i); i += width }
+  return b
+}
+
+const c_i16be = (s) => {
+  const xs = split(without_whitespace(s))
+  const width = 2
+  const b = Buffer.allocUnsafe(xs.length * width)
+  let i = 0
+  for (let x of xs) { b.writeInt16BE(Number(x), i); i += width }
   return b
 }
 
@@ -80,6 +80,7 @@ const constructors = {
   c_i16le,
   c_ui16le,
   c_i16be,
+  c_ui16be,
 }
 
 Object.assign(module.exports, constructors)

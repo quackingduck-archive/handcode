@@ -4,8 +4,6 @@
 const assert = require('assert')
 const constructors = require('./index')
 
-const hb = (x) => new Buffer(x, 'hex')
-
 function assert_construction (name, s, hs) {
   const f = constructors['c_' + name]
   assert.deepEqual(f(s), new Buffer(hs, 'hex'))
@@ -22,5 +20,10 @@ assert_construction('i8', '1 2 3', '7b')
 assert_construction('i8', '1 2 3, 1', '7b01')
 
 assert_construction('i16le', '255', 'ff00')
+assert_construction('i16le', '-2', 'feff')
+assert_construction('i16be', '-2', 'fffe')
+
+assert_construction('ui16le', '65534', 'feff')
+assert_construction('ui16be', '65534', 'fffe')
 
 console.log('ok')
