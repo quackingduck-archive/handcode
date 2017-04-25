@@ -1,11 +1,30 @@
 ---
-# plain hex chars. spaces ignored, must be byte aligned
-- !hex fe ed fa ce      # feedface
 
-# utf8 strings. quotes are optional, regular escape chars work
-- !utf8 hello           # 68656c6c6f
-- !utf8 " world\n"      # 20776f726c640a
+# hex digit pairs (no half bytes). spaces ignored
+- !hex fe ed fa ce      # feedface          11111110 11101101 11111010 11001110
+
+# utf8 strings
+- !utf8 hello           # 68656c6c6f        01101000 01100101 01101100 01101100 01101111
+# quote to control whitespace, and include escaped non-printing chars
+- !utf8 " bob\n"        # 20626f620a        00100000 01100010 01101111 01100010 00001010
+# escape any 8bit, 16bit and 32bit code points
+- !utf8 "\x0a"          # 0a                00001010
+- !utf8 "\u000a"        # 0a                00001010
+- !utf8 "\U0000000a"    # 0a                00001010
 
 # signed 8bit ints
-- !i8 1                 # 01
-- !i8 -1                # ff
+- !i8 1                 # 01                00000001
+- !i8 -1                # ff                11111111
+# spaces allowed here too
+- !i8 1 2 3             # 7b                01111011
+# multiple values can be separated by with commas
+- !i8 123, 1            # 7b01              01111011 00000001
+# binary notation
+- !i8 0b11              # 03                00000011
+# and hex
+- !i8 0x0a              # 0a                00001010
+# and scientific notation
+- !i8 1e2               # 64                01100100
+
+# unsigned 8bit ints
+- !ui8 255              # ff                11111111

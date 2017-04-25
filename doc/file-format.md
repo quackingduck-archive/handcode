@@ -2,8 +2,7 @@ yaml subset
 
 must begin with `---`
 
-example
-
+example:
 ```
 ---
 - !!hex c001 d00d
@@ -21,14 +20,4 @@ example
 - !!f32 -1.1
 ```
 
-n.b.
-
-* ints
-  * can be more than one int
-  * negative nums are twos comp
-* binary and hex
-  * can be more than one byte
-  * but no half-bytes allowed
-  * spaces ignored
-* no booleans, they're not a thing
-*
+no booleans. they're too high-level for this

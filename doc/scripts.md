@@ -23,7 +23,7 @@ and copying that to their clipboard
 $ xxd -p examples/arp.pcap | pbcopy
 ```
 
-then create `arp.pacp.bsm.yml` and paste in the hex bytes
+then create `arp.pacp.yml` and paste in the hex bytes
 
 ```
 ---
@@ -46,7 +46,7 @@ $ diff -q examples/arp.pcap a.out
 $ # no output means files have no differences
 ```
 
-now they can begin the manual analysis/dissasembly by editing the file
+now they can begin the manual analysis/disassembly by editing the file
 
 ```
 ---

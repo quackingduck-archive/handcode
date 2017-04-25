@@ -6,11 +6,7 @@
 const yaml = require('js-yaml')
 const fs = require('fs')
 
-// constructor functions
-// issue:
-//  if value cannot be constructed from input string,
-//  how to propegate this error back to yaml parser,
-//  so we can show user a line number
+// buffer constructors
 
 const c_hex = (x) => {
   x = x.trim().replace(/\s/g, '')
@@ -23,10 +19,20 @@ const c_utf8 = (x) => {
 }
 
 const c_i8 = (x) => {
-  const b = Buffer.allocUnsafe(1)
-  // todo: validate
-  // todo: support binary notation
-  b.writeInt8(parseInt(x, 10), 0)
+  x = x.replace(/\s/g, '')
+  const xs = x.split(',')
+  const b = Buffer.allocUnsafe(xs.length)
+  let i = 0
+  for (x of xs) b.writeInt8(Number(x), i++)
+  return b
+}
+
+const c_ui8 = (x) => {
+  x = x.replace(/\s/g, '')
+  const xs = x.split(',')
+  const b = Buffer.allocUnsafe(xs.length)
+  let i = 0
+  for (x of xs) b.writeUInt8(Number(x), i++)
   return b
 }
 
@@ -43,6 +49,7 @@ const schema = yaml.Schema.create([
   st('!hex', c_hex),
   st('!utf8', c_utf8),
   st('!i8', c_i8),
+  st('!ui8', c_ui8),
 ])
 
 function f (s) {
@@ -52,9 +59,9 @@ function f (s) {
   }
 
   try {
-    // x is array of buffers,
+    // xs is array of buffers,
     // terminates early on unrecognized tag
-    const x = yaml.load(s, {
+    const xs = yaml.load(s, {
       schema,
       listener: (event, state) => {
         if (event === 'close' && state.tag === '?') {
@@ -64,7 +71,7 @@ function f (s) {
         }
       },
     })
-    for (let b of x) {
+    for (let b of xs) {
       process.stdout.write(b)
     }
   } catch (e) {
