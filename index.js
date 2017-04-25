@@ -77,6 +77,7 @@ const constructors = {
   c_hex,
   c_utf8,
   c_i8,
+  c_ui8,
   c_i16le,
   c_ui16le,
   c_i16be,
@@ -94,16 +95,12 @@ const st = (n, c) => (
   })
 )
 
-const schema = yaml.Schema.create([
-  st('!hex', c_hex),
-  st('!utf8', c_utf8),
-  st('!i8', c_i8),
-  st('!ui8', c_ui8),
-  st('!i16le', c_i16le),
-  st('!ui16le', c_ui16le),
-  st('!i16be', c_i16be),
-  st('!ui16be', c_ui16be),
-])
+const sts = Object.keys(constructors).map((name) => {
+  const tag_name = name.replace('c_', '!')
+  return st(tag_name, constructors[name])
+})
+
+const schema = yaml.Schema.create(sts)
 
 function f (s) {
   if (s.slice(0, 4) !== '---\n') {
