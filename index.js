@@ -11,6 +11,16 @@ const split = (s) => s.split(',')
 
 // buffer constructors
 
+const c_bin = (s) => {
+  s = strip(s)
+  if (s.length % 8 !== 0) throw new Error('bin values must be byte aligned')
+  const b = Buffer.allocUnsafe(s.length / 8)
+  for (let i = 0; i < b.length; i++) {
+    b.writeUInt8(Number('0b' + s.slice(i * 8, i * 8 + 8)), i)
+  }
+  return b
+}
+
 const c_hex = (s) => {
   return Buffer.from(strip(s), 'hex')
 }
@@ -40,9 +50,20 @@ const c_i32be = (s) => _c_int(s, 'Int32BE', 4)
 const c_ui32le = (s) => _c_int(s, 'UInt32LE', 4)
 const c_ui32be = (s) => _c_int(s, 'UInt32BE', 4)
 
+const c_f32be = (s) => _c_int(s, 'FloatBE', 4)
+const c_f32le = (s) => _c_int(s, 'FloatLE', 4)
+
+const c_f64be = (s) => _c_int(s, 'DoubleBE', 8)
+const c_f64le = (s) => _c_int(s, 'DoubleLE', 8)
+
 const constructors = {
+  // bit strings
+  c_bin,
+  // byte strings
   c_hex,
+  // char strings
   c_utf8,
+  // int nums
   c_i8,
   c_ui8,
   c_i16le,
@@ -53,6 +74,11 @@ const constructors = {
   c_i32be,
   c_ui32le,
   c_ui32be,
+  // float nums
+  c_f32be,
+  c_f32le,
+  c_f64be,
+  c_f64le,
 }
 
 Object.assign(module.exports, constructors)

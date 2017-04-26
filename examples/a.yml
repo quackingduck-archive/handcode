@@ -1,8 +1,13 @@
 ---
 
+# n.b. all tags generate whole-byte (byte aligned) values,
+# no tag produces sub-byte (e.g. half byte) values
+
 # hex digit pairs
-# spaces ignored
-- !hex fe ed fa ce      # feedface          11111110 11101101 11111010 11001110
+- !hex fe ed fa ce #         = feedface = 11111110 11101101 11111010 11001110
+
+# one/zero bit patterns
+- !bin 1111 1110 1110 1101 # = feed     = 11111110 11101101
 
 # utf8 strings
 - !utf8 hello           # 68656c6c6f        01101000 01100101 01101100 01101100 01101111
@@ -37,13 +42,28 @@
 - !ui8 255              # ff                11111111
 
 # signed 16bit little endian ints
-- !i16le -2            # feff               11111110 11111111
+- !i16le -2             # feff              11111110 11111111
 # ... and big endian
-- !i16be -2            # fffe               11111111 11111110
+- !i16be -2             # fffe              11111111 11111110
 
 # and unsigned
-- !ui16le 65534        # feff               11111110 11111111
-- !ui16be 65534        # fffe               11111111 11111110
+- !ui16le 65534         # feff              11111110 11111111
+- !ui16be 65534         # fffe              11111111 11111110
 
 # 32bit ints
 - !ui32le 4'294'967'295 # ffffffff          11111111 11111111 11111111 11111111
+
+# no 64bit int support yet ...
+
+# "floats" (single precision IEEE 754 binary32 floating points)
+# bits reformatted to: sign/exponent/fraction
+- !f32be 0.5          # 3f000000            0 01111110 00000000000000000000000
+- !f32be -0.5         # bf000000            1 01111110 00000000000000000000000
+
+# big and little
+- !f32be 0.5          # 3f000000            00111111 00000000 00000000 00000000
+
+# "double" (double precision IEEE 754 binary64 floating points)
+- !f64be 0.5          # 0 01111111110 0000000000000000000000000000000000000000000000000000
+                      # = 3fe0000000000000
+- !f64le 0.5          # = 000000000000e03f
