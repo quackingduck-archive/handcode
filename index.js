@@ -6,13 +6,13 @@
 const yaml = require('js-yaml')
 const fs = require('fs')
 
-const without_whitespace = (s) => s.replace(/\s/g, '')
+const strip = (s) => s.replace(/(\s|')/g, '') // whitespace and ' char
 const split = (s) => s.split(',')
 
 // buffer constructors
 
 const c_hex = (s) => {
-  return Buffer.from(without_whitespace(s), 'hex')
+  return Buffer.from(strip(s), 'hex')
 }
 
 const c_utf8 = (x) => {
@@ -20,7 +20,7 @@ const c_utf8 = (x) => {
 }
 
 const _c_int = (s, type, byte_width) => {
-  const xs = split(without_whitespace(s))
+  const xs = split(strip(s))
   const b = Buffer.allocUnsafe(xs.length * byte_width)
   let i = 0
   for (let x of xs) { b['write' + type](Number(x), i); i += byte_width }

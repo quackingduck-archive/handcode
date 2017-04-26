@@ -27,3 +27,9 @@ using undocumented `listener` option of js-yaml to detect untagged (or unrecogni
 ints are default signed (twos compliment encoded), so `i8` means signed and `ui8` means unsigned. i think i'm following an informal convention here
 
 using node `Buffer` class, not interested in browser compatibility right now
+
+---
+
+no support for 64bit ints, JS doesn't have native support so punting for now
+
+---

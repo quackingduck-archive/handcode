@@ -16,7 +16,7 @@ assert_construction('utf8', 'hello', '68656c6c6f')
 assert_construction('utf8', ' world\n', '20776f726c640a')
 
 assert_construction('i8', '123', '7b')
-assert_construction('i8', '1 2 3', '7b')
+assert_construction('i8', '1 2\'3', '7b')
 assert_construction('i8', '1 2 3, 1', '7b01')
 
 assert_construction('i16le', '255', 'ff00')
