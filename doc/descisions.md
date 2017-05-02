@@ -33,3 +33,5 @@ using node `Buffer` class, not interested in browser compatibility right now
 no support for 64bit ints, JS doesn't have native support so punting for now
 
 ---
+
+assert-index directive does not report line number of directive that failed the assertion because this will require extending js-yaml to extract that info

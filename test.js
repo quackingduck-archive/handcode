@@ -34,7 +34,7 @@ assert_construction('i32be', '-2', 'fffffffe')
 assert_construction('ui32le', '65534', 'feff0000')
 assert_construction('ui32be', '65534', '0000fffe')
 
-// todo: 64bit ints
+// 64bit ints not yet support
 
 // float and doubles
 assert_construction('f32be', '0.5', '3f000000')
@@ -43,5 +43,10 @@ assert_construction('f32le', '0.5', '0000003f')
 assert_construction('f64be', '0.5', '3fe0000000000000')
 
 // plain binary bytes
+assert_construction('bin', '1111 1110 1110 1101', 'feed')
+
+assert.deepEqual(
+  constructors.c_assert_index('0x4'),
+  { assert_index: true, value: 4 })
 
 console.log('ok')

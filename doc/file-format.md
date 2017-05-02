@@ -1,23 +1,22 @@
-yaml subset
+first 4 bytes must be `---\n` (this is a reserved extension point)
 
-must begin with `---`
+a flat list of tokens (type + lexeme) encoded with a subset of yaml
 
 example:
 ```
 ---
 - !!hex c001 d00d
-- !!bits 0111 1111
+- !!bin 0111 1111
 - !!utf8 unquoted
-- !!utf8 quoted
+- !!utf8 "quoted"
 - !!utf8 >
   multi
   line
 - !!i8 -1
-- !!i16 -1
-- !!i32 -1
-- !!i64 -1
-- !!ui8 1 2 3 4
-- !!f32 -1.1
+- !!i16le -1
+- !!f32le -1.1
 ```
 
-no booleans. they're too high-level for this
+(see `/examples` for more)
+
+no boolean type, because what's truth really?

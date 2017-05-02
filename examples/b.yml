@@ -1,0 +1,4 @@
+---
+- !hex fe ed fa ce
+- !assert-index 0x4 # can be decimal or hex
+- !hex fe ed fa ce

@@ -9,7 +9,7 @@ const fs = require('fs')
 const strip = (s) => s.replace(/(\s|')/g, '') // whitespace and ' char
 const split = (s) => s.split(',')
 
-// buffer constructors
+// buffer constructors / assertion handlers
 
 const c_bin = (s) => {
   s = strip(s)
@@ -56,6 +56,10 @@ const c_f32le = (s) => _c_int(s, 'FloatLE', 4)
 const c_f64be = (s) => _c_int(s, 'DoubleBE', 8)
 const c_f64le = (s) => _c_int(s, 'DoubleLE', 8)
 
+const c_assert_index = (s) => {
+  return { assert_index: true, value: Number(strip(s)) }
+}
+
 const constructors = {
   // bit strings
   c_bin,
@@ -79,6 +83,8 @@ const constructors = {
   c_f32le,
   c_f64be,
   c_f64le,
+  // not constructor
+  c_assert_index,
 }
 
 Object.assign(module.exports, constructors)
@@ -93,7 +99,7 @@ const st = (n, c) => (
 )
 
 const sts = Object.keys(constructors).map((name) => {
-  const tag_name = name.replace('c_', '!')
+  const tag_name = name.replace('c_', '!').replace(/_/g, '-')
   return st(tag_name, constructors[name])
 })
 
@@ -101,7 +107,7 @@ const schema = yaml.Schema.create(sts)
 
 function f (s) {
   if (s.slice(0, 4) !== '---\n') {
-    console.error('input must begin with ---')
+    console.error('error: input must begin with ---')
     process.exit(1)
   }
 
@@ -118,8 +124,18 @@ function f (s) {
         }
       },
     })
+    let i = 0 // byte index
+    // render error if byte index off
     for (let b of xs) {
-      process.stdout.write(b)
+      if (b.assert_index) {
+        if (i !== b.value) {
+          console.error(`expected byte index to be: ${b.value} but was ${i}`)
+          process.exit(1)
+        }
+      } else {
+        process.stdout.write(b)
+        i += b.length
+      }
     }
   } catch (e) {
     if (e.message) console.error(e.message)

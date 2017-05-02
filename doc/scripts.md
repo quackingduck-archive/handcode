@@ -54,6 +54,8 @@ now they can begin the manual analysis/disassembly by editing the file
 - !hex 02000400    # major version, minor version
 - !hex 00000000    # unused timestamp
 - !hex 00000000    # unused timestamp
+# ensure we have generated 16 bytes and the next byte index is therefore 16
+- !assert-index 16
 - !hex >
   00000400010000007679f6580493
   07002a0000002a000000ffffffffffffa45e60df2e1b0806000108000604
