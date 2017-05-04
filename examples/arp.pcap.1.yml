@@ -1,0 +1,51 @@
+--- !hc
+
+# run this command to confirm the generated binary matches the original bit for bit
+# $ cmp <(hc arp.pcap.1.yml) arp.pcap
+
+- !hex d4c3b2a1    # magic number, indicates little endian byte order
+- !hex 02000400    # major version, minor version
+- !hex 00000000    # timezone offset
+- !hex 00000000    # timestamp accuracy
+- !hex 00000400    # snapshot length
+- !hex 01000000    # link layer frame type
+
+# <captured packet: arp request>
+- !hex 7679f658    # timestamp, seconds since unix epoch
+- !hex 04930700    # timestamp, nanoseconds
+- !hex 2a000000    # length of captured data
+- !hex 2a000000    # un-truncated length of captured data
+# <ethernet layer 2 frame>
+- !hex ffffffffffff # destination address
+- !hex a45e60df2e1b # source address
+- !hex 0806         # protocol: arp
+# <arp datagram>
+- !hex 0001         # hardware type: ethernet
+- !hex 0800         # protocol type: IP
+- !hex 06           # size of hardware addresses (in bytes)
+- !hex 04           # size of protocol addresses (in bytes)
+- !hex 0001         # opcode: request
+- !hex a45e60df2e1b # sender hardware address
+- !hex 0a000104     # sender protocol address
+- !hex 000000000000 # target hardware address
+- !hex 0a000101     # target protocol address
+
+# <captured packet: arp response>
+- !hex 7679f658     # timestamp, seconds since unix epoch
+- !hex c49c0700     # timestamp, nanoseconds
+- !hex 2a000000     # length of captured data
+- !hex 2a000000     # un-truncated length of captured data
+# <ethernet layer 2 frame>
+- !hex a45e60df2e1b # destination address
+- !hex d8306248b700 # source address
+- !hex 0806         # protocol: arp
+# <arp datagram>
+- !hex 0001         # hardware type: ethernet
+- !hex 0800         # protocol type: IP
+- !hex 06           # size of hardware addresses (in bytes)
+- !hex 04           # size of protocol addresses (in bytes)
+- !hex 0002         # opcode: request
+- !hex d8306248b700 # sender hardware address
+- !hex 0a000101     # sender protocol address
+- !hex a45e60df2e1b # target hardware address
+- !hex 0a000104     # target protocol address
