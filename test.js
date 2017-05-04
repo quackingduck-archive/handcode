@@ -2,7 +2,7 @@
 /* eslint comma-dangle: ["error", "always-multiline"] */
 
 const assert = require('assert')
-const constructors = require('./index')
+const constructors = require('./tag_constructors')
 
 function assert_construction (name, s, hs) {
   const f = constructors['c_' + name]

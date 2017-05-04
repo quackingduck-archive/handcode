@@ -1,4 +1,4 @@
----
+--- !hc
 
 # n.b. all tags generate whole-byte (byte aligned) values,
 # no tag produces sub-byte (e.g. half byte) values

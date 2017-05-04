@@ -1,5 +1,22 @@
 {
+  "name": "handcode",
+  "description": "Hand write arbitrary binary data.",
+  "version": "1.0.0",
+  "main": "index.js",
+  "bin": {
+    "hc": "cli.js"
+  },
+  "directories": {
+    "doc": "doc",
+    "example": "examples"
+  },
   "dependencies": {
     "js-yaml": "*"
-  }
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node test.js"
+  },
+  "author": "Myles Byrne",
+  "license": "ISC"
 }
