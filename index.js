@@ -103,11 +103,18 @@ const sts = Object.keys(constructors).map((name) => {
   return st(tag_name, constructors[name])
 })
 
+sts.push(new yaml.Type('!hc', {
+  kind: 'sequence',
+  resolve: (x) => (x !== null),
+  construct: (x) => x,
+}))
+
 const schema = yaml.Schema.create(sts)
 
 function f (s) {
-  if (s.slice(0, 4) !== '---\n') {
-    console.error('error: input must begin with ---')
+  const magic_number = '--- !hc\n'
+  if (s.slice(0, magic_number.length) !== magic_number) {
+    console.error('error: input must begin with --- !hc')
     process.exit(1)
   }
 
