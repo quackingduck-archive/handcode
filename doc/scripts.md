@@ -1,7 +1,7 @@
 hand decoding a small pcap file
 
 two arp packets were captured with wireshark,
-the user wishes to analyse the bytestream in the capture file
+the user wishes to analyze the bytestream in the capture file
 
 ```
 $ xxd -g1 examples/arp.pcap
@@ -74,4 +74,18 @@ $ # no output means files have no differences
 
 ---
 
-... `b d` "disassembles" its input into multiple values
+given the hex representation of a few bytes, decode them a few different ways
+
+```
+$ b dh 'feedface'
+# bytes are not valid utf8
+- !bin 1111'1110  1110'1101  1111'1010  1100'1110
+- !i32le -822415874
+- !ui32le 3472551422
+- !i32be -17958194
+- !ui32be 4277009102
+- !f32be -1.5816464369601856e+38
+- !f32le -2104950528
+```
+
+... `b dh` "disassembles" its input into multiple values
