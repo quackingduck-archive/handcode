@@ -1,8 +1,12 @@
-a "language" for precisely (i.e. "by hand") laying out arbitrary byte sequences
+Hand write arbitrary binary data.
 
-a program that "assembles" a byte sequence (binary data) from input text file
+When you need to get so low-level that you are precisely placing every bit in a byte stream, `hc` can help.
 
-if you've found use for a hex editor in the past, you may find a use for this in the future
-
-  $ <<< $'---\n- !hex feedface' node index.js | xxd
+  $ <<< $'---\n- !bin 11111110 11101101 11111010 11001110' node index.js | xxd
   00000000: feed face                                ....
+
+See `/examples` for some example source files.
+
+If find yourself needing something more sophisticated you might want to try nasm[1] ... or any high-level programming language that supports explicit binary values.
+
+[1]:http://www.nasm.us/
