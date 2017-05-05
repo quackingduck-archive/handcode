@@ -12,13 +12,13 @@
 - !i32le 1         # link layer frame type
 
 # <captured packet: arp request>
-- !hex 7679f658    # timestamp, seconds since unix epoch
-- !hex 04930700    # timestamp, nanoseconds
-- !hex 2a000000    # length of captured data
-- !hex 2a000000    # un-truncated length of captured data
+- !i32le 1'492'547'958 # timestamp, seconds since unix epoch
+- !i32le 496'388       # timestamp, nanoseconds
+- !i32le 42            # length of captured data
+- !i32le 42            # un-truncated length of captured data
 # <ethernet layer 2 frame>
-- !hex ffffffffffff # destination address
-- !hex a45e60df2e1b # source address
+- !hex ff ff ff ff ff ff # destination address
+- !hex a4 5e 60 df 2e 1b # source address
 - !hex 0806         # protocol: arp
 # <arp datagram>
 - !hex 0001         # hardware type: ethernet
