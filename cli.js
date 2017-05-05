@@ -30,7 +30,9 @@ const schema = yaml.Schema.create(sts)
 
 // ---
 
-function f (s) {
+// take output and error streams as args?
+// throw error if error?
+function compile (s) {
   const magic_number = '--- !hc\n'
   if (s.slice(0, magic_number.length) !== magic_number) {
     console.error('error: input must begin with --- !hc')
@@ -69,11 +71,66 @@ function f (s) {
   }
 }
 
-module.exports = f
+function lpad (s, l, c = '0') {
+  while (s.length < l) s = c + s
+  return s
+}
+
+// 11111110 => 1111'1110
+function nibbly_byte_str (s) {
+  // return s.replace(/\d{4}/, "$&'")
+  return s.replace(/\d{4}/, "$&'")
+}
+
+function io_bin (s) {
+  return s.replace(/0/g, 'o').replace(/1/g, 'x')
+}
+
+function d_bin (b) {
+  let a = Array.from(b.values())
+  a = a.map((byte) => io_bin(nibbly_byte_str(lpad(byte.toString(2), 8))))
+  return '- !bin ' + '|' + a.join('|') + '|'
+}
+
+const util = require('util')
+const is_valid_utf8 = require('utf-8-validate')
+
+function hex_decode (s) {
+  s = s.replace(/\s/g, '')
+  let b = Buffer.from(s, 'hex')
+  console.log(d_bin(b))
+  if (is_valid_utf8(b)) {
+    s = '- !utf8 ' + util.inspect(b.toString())
+    console.log(s)
+  } else {
+    console.log('# bytes are not valid utf8')
+  }
+  if (b.length === 4) { // todo: should be modulo 4
+    // little endian
+    let i = b.readInt32LE(0).toString()
+    let ui = b.readUInt32LE(0).toString()
+    console.log('- !i32le ' + i)
+    if (i !== ui) console.log('- !ui32le ' + ui)
+    // the big end
+    i = b.readInt32BE(0).toString()
+    ui = b.readUInt32BE(0).toString()
+    console.log('- !i32be ' + i)
+    if (i !== ui) console.log('- !ui32be ' + ui)
+  }
+  // todo: floats, more sizes of int
+}
+
+module.exports = compile
 
 if (require.main === module) {
   // if stdin is tty then show help instead?
-  const input_filename = process.argv[2] || '/dev/stdin'
-  const s = fs.readFileSync(input_filename, 'utf8')
-  f(s)
+  const a = process.argv[2]
+  if (a === 'hd') {
+    const b = process.argv[3]
+    hex_decode(b)
+  } else {
+    const input_filename = a || '/dev/stdin'
+    const s = fs.readFileSync(input_filename, 'utf8')
+    compile(s)
+  }
 }
