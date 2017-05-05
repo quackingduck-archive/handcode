@@ -44,6 +44,8 @@ assert_construction('f64be', '0.5', '3fe0000000000000')
 
 // plain binary bytes
 assert_construction('bin', '1111 1110 1110 1101', 'feed')
+// Is and Os can be used
+assert_construction('bin', 'IIII IIIO IIIO IIOI', 'feed')
 
 assert.deepEqual(
   constructors.c_assert_index('0x4'),
