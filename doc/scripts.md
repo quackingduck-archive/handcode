@@ -1,7 +1,8 @@
-hand decoding a small pcap file
+hand coding/decoding a small pcap file
 
-two arp packets were captured with wireshark,
-the user wishes to analyze the bytestream in the capture file
+two arp packets were captured with tcpdump
+
+lets analyze then synthesize the bytestream
 
 ```
 $ xxd -g1 examples/arp.pcap
@@ -16,17 +17,16 @@ $ xxd -g1 examples/arp.pcap
 00000080: 01 01 a4 5e 60 df 2e 1b 0a 00 01 04              ...^`.......
 ```
 
-they start by creating a hex char representation of the bytes
-and copying that to their clipboard
+first we copy a hex representation to the clipboard
 
 ```
 $ xxd -p examples/arp.pcap | pbcopy
 ```
 
-then create `arp.pacp.yml` and paste in the hex bytes
+then we create a the handcode file `arp.pacp.yml` and paste
 
 ```
----
+--- !hc
 - !hex >
   d4c3b2a102000400000000000000000000000400010000007679f6580493
   07002a0000002a000000ffffffffffffa45e60df2e1b0806000108000604
@@ -35,18 +35,16 @@ then create `arp.pacp.yml` and paste in the hex bytes
   d8306248b7000a000101a45e60df2e1b0a000104
 ```
 
-experience improvement: the tool could do this file creation step for them
+(experience improvement: handcode should automate this step)
 
-now if they use to the tool to "assemble" this source file
-they'll get the original bytestream as output
+when you run `hc` on this file you will get the same bytes as the original file
 
 ```
-$ b a arp.pacp.bsm.yml > a.out
-$ diff -q examples/arp.pcap a.out
+$ cmp <(hc arp.pacp.yml) examples/arp.pcap
 $ # no output means files have no differences
 ```
 
-now they can begin the manual analysis/disassembly by editing the file
+now you can do some analysis on the data by adding comments, and changing the representation while maintaining the same binary value
 
 ```
 ---
@@ -64,20 +62,21 @@ now they can begin the manual analysis/disassembly by editing the file
   d8306248b7000a000101a45e60df2e1b0a000104
 ```
 
-and it should reassemble to the same byte stream
+you can always check your analysis by resynthesizing the bytestream
 
 ```
-$ b a arp.pacp.bsm.yml > a.out
-$ diff -q examples/arp.pcap a.out
+$ cmp <(hc arp.pacp.yml) examples/arp.pcap
 $ # no output means files have no differences
 ```
 
 ---
 
+(up next:)
+
 given the hex representation of a few bytes, decode them a few different ways
 
 ```
-$ b dh 'feedface'
+$ hc hd 'feedface'
 # bytes are not valid utf8
 - !bin 1111'1110  1110'1101  1111'1010  1100'1110
 - !i32le -822415874
@@ -87,5 +86,3 @@ $ b dh 'feedface'
 - !f32be -1.5816464369601856e+38
 - !f32le -2104950528
 ```
-
-... `b dh` "disassembles" its input into multiple values
