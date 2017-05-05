@@ -1,14 +1,15 @@
 --- !hc
 
 # run this command to confirm the generated binary matches the original bit for bit
-# $ cmp <(hc arp.pcap.1.yml) arp.pcap
+# $ cmp <(hc examples/arp.pcap.2.yml) examples/arp.pcap
 
-- !hex d4c3b2a1    # magic number, indicates little endian byte order
-- !hex 02000400    # major version, minor version
-- !hex 00000000    # timezone offset
-- !hex 00000000    # timestamp accuracy
-- !hex 00000400    # maximum length of captured packets before truncation
-- !hex 01000000    # link layer frame type
+- !hex d4 c3 b2 a1 # pcap little-endian magic number
+                   # (the big-endian value is: a1 b2 c3 d4)
+- !i16le 2,4       # major version, minor version
+- !i32le 0         # timezone offset
+- !i32le 0         # timestamp accuracy
+- !i32le 262'144   # maximum length in bytes of captured packets before truncation
+- !i32le 1         # link layer frame type
 
 # <captured packet: arp request>
 - !hex 7679f658    # timestamp, seconds since unix epoch
