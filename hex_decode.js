@@ -26,6 +26,7 @@ const is_valid_utf8 = require('utf-8-validate')
 function hex_decode (s) {
   s = s.replace(/\s/g, '')
   let b = Buffer.from(s, 'hex')
+  console.log('--- !hc')
   console.log(d_bin(b))
   if (is_valid_utf8(b)) {
     s = '- !utf8 ' + util.inspect(b.toString())
