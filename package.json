@@ -1,7 +1,7 @@
 {
   "name": "handcode",
   "description": "Hand write arbitrary binary data.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "main": "index.js",
   "bin": {
     "hc": "cli.js"
