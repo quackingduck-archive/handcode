@@ -4,7 +4,7 @@
 # $ cmp <(hc examples/arp.pcap.2.yml) examples/arp.pcap
 
 - !hex d4 c3 b2 a1 # pcap little-endian magic number
-                   # (the big-endian value is: a1 b2 c3 d4)
+                   # (the original big-endian value is: a1 b2 c3 d4)
 - !i16le 2,4       # major version, minor version
 - !i32le 0         # timezone offset
 - !i32le 0         # timestamp accuracy
@@ -17,36 +17,36 @@
 - !i32le 42            # length of captured data
 - !i32le 42            # un-truncated length of captured data
 # <ethernet layer 2 frame>
-- !hex ff ff ff ff ff ff # destination address
-- !hex a4 5e 60 df 2e 1b # source address
-- !hex 0806         # protocol: arp
+- !hex ff'ff'ff'ff'ff'ff # destination address
+- !hex a4'5e'60'df'2e'1b # source address
+- !i16be 2054            # protocol: arp
 # <arp datagram>
-- !hex 0001         # hardware type: ethernet
-- !hex 0800         # protocol type: IP
-- !hex 06           # size of hardware addresses (in bytes)
-- !hex 04           # size of protocol addresses (in bytes)
-- !hex 0001         # opcode: request
-- !hex a45e60df2e1b # sender hardware address
-- !hex 0a000104     # sender protocol address
-- !hex 000000000000 # target hardware address
-- !hex 0a000101     # target protocol address
+- !i16be 1          # hardware type: ethernet
+- !i16be 2048       # protocol type: IP
+- !i8 6             # size of hardware addresses (in bytes)
+- !i8 4             # size of protocol addresses (in bytes)
+- !i16be 1          # opcode: request
+- !hex a4'5e'60'df'2e'1b # sender hardware address
+- !ui8 10,0,1,4     # sender protocol address
+- !hex 00'00'00'00'00'00 # target hardware address
+- !ui8 10,0,1,1     # target protocol address
 
 # <captured packet: arp response>
-- !hex 7679f658     # timestamp, seconds since unix epoch
-- !hex c49c0700     # timestamp, nanoseconds
-- !hex 2a000000     # length of captured data
-- !hex 2a000000     # un-truncated length of captured data
+- !i32le 1'492'547'958  # timestamp, seconds since unix epoch
+- !ui32le 498'884       # timestamp, nanoseconds
+- !i32le 42             # length of captured data
+- !i32le 42             # un-truncated length of captured data
 # <ethernet layer 2 frame>
-- !hex a45e60df2e1b # destination address
-- !hex d8306248b700 # source address
-- !hex 0806         # protocol: arp
+- !hex a4'5e'60'df'2e'1b # destination address
+- !hex d8'30'62'48'b7'00 # source address
+- !i16be 2054            # protocol: arp
 # <arp datagram>
-- !hex 0001         # hardware type: ethernet
-- !hex 0800         # protocol type: IP
-- !hex 06           # size of hardware addresses (in bytes)
-- !hex 04           # size of protocol addresses (in bytes)
-- !hex 0002         # opcode: request
-- !hex d8306248b700 # sender hardware address
-- !hex 0a000101     # sender protocol address
-- !hex a45e60df2e1b # target hardware address
-- !hex 0a000104     # target protocol address
+- !i16be 1          # hardware type: ethernet
+- !i16be 2048       # protocol type: IP
+- !i8 6             # size of hardware addresses (in bytes)
+- !i8 4             # size of protocol addresses (in bytes)
+- !i16be 2          # opcode: request
+- !hex d8'30'62'48'b7'00 # sender hardware address
+- !ui8 10,0,1,1     # sender protocol address
+- !hex a4'5e'60'df'2e'1b # target hardware address
+- !ui8 10,0,1,4     # target protocol address

@@ -35,3 +35,15 @@ no support for 64bit ints, JS doesn't have native support so punting for now
 ---
 
 assert-index directive does not report line number of directive that failed the assertion because this will require extending js-yaml to extract that info
+
+---
+
+binary values look like this
+
+  - !bin |ooxo'xoxo|oooo'oooo|
+
+the goal formatting is to convey "8 bit cells of memory, the x's mark the bits that are set, the quote separates the two nibbles"
+
+---
+
+considered support for octal values and decided to punt

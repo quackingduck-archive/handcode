@@ -46,6 +46,18 @@ function hex_decode (s) {
     console.log('- !i32be ' + i)
     if (i !== ui) console.log('- !ui32be ' + ui)
   }
+  if (b.length === 2) { // todo: should be modulo 2
+    // little endian
+    let i = b.readInt16LE(0).toString()
+    let ui = b.readUInt16LE(0).toString()
+    console.log('- !i16le ' + i)
+    if (i !== ui) console.log('- !ui16le ' + ui)
+    // the big end
+    i = b.readInt16BE(0).toString()
+    ui = b.readUInt16BE(0).toString()
+    console.log('- !i16be ' + i)
+    if (i !== ui) console.log('- !ui16be ' + ui)
+  }
   // todo: floats, more sizes of int
 }
 
