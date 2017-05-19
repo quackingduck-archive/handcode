@@ -71,18 +71,34 @@ $ # no output means files have no differences
 
 ---
 
-(up next:)
-
 given the hex representation of a few bytes, decode them a few different ways
 
 ```
-$ hc hd 'feedface'
+--- !hc
+- !bin |xxxx'xxxo|xxxo'xxox|xxxx'xoxo|xxoo'xxxo|
 # bytes are not valid utf8
-- !bin 1111'1110  1110'1101  1111'1010  1100'1110
 - !i32le -822415874
 - !ui32le 3472551422
 - !i32be -17958194
 - !ui32be 4277009102
-- !f32be -1.5816464369601856e+38
-- !f32le -2104950528
+```
+
+(can be improved with more ways)
+
+---
+
+(up next:)
+
+hexdump in `hc` compatible format
+
+```
+$ hc d /examples/arp.pacp.yml
+--- !hc
+- !assert-index 0
+- !hex d4 c3 b2 a1 02 00 04 00 00 00 00 00 00 00 00 00
+- !assert-index 16
+- !hex 00 00 04 00 01 00 00 00 76 79 f6 58 04 93 07 00
+- !assert-index 32
+- !hex 2a 00 00 00 2a 00 00 00 ff ff ff ff ff ff a4 5e
+...
 ```
