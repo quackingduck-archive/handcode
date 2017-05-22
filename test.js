@@ -34,7 +34,7 @@ assert_construction('i32be', '-2', 'fffffffe')
 assert_construction('ui32le', '65534', 'feff0000')
 assert_construction('ui32be', '65534', '0000fffe')
 
-// 64bit ints not yet support
+// 64bit ints not yet supported
 
 // float and doubles
 assert_construction('f32be', '0.5', '3f000000')
