@@ -85,10 +85,12 @@ if (require.main === module) {
   } else if (a === 'd') {
     // dump
     const b = process.argv[3] || '/dev/stdin'
+    const out = process.stdout
     const rs = fs.createReadStream(b)
     let mem = dump.initialize()
-    rs.on('data', (b) => { mem = dump.step(mem, b); dump.write_yaml(mem.indexed_slices) })
-    rs.on('end', () => { dump.finalize(mem); dump.write_yaml(mem.indexed_slices) })
+    out.write('--- !hc\n')
+    rs.on('data', (b) => { mem = dump.step(mem, b); dump.write_yaml(mem.indexed_slices, out) })
+    rs.on('end', () => { dump.finalize(mem); dump.write_yaml(mem.indexed_slices, out) })
   } else {
     // compile
     const input_filename = a || '/dev/stdin'
