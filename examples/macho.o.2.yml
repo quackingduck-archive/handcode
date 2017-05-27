@@ -4,45 +4,48 @@
 # $ cc -g -c -x c -o macho.o -  <<< 'int foo() { return 42; }'
 
 # run this command to check that hadcoded binary matches original
-# $ cmp <(hc macho.o.1.yml) macho.o
+# $ cmp <(hc macho.o.2.yml) macho.o
 
 # structures defined in /usr/include/mach-o/loader.h
 
 - !assert-index 0
 
 # <header> : struct mach_header_64
-- !hex cf fa ed fe # magic number
+- !hex cffaedfe # magic number
+                  # original 32bit version:   feedface
+                  # then 64bit revision:      feedfacf
+                  # little endian revision:   cffaedfe (byte order reversed)
 # cpu specifier (defined in /usr/include/mach/machine.h )
-- !bin |oooo'oxxx|oooo'oooo|oooo'oooo|oooo'ooox|
-#             ^^^                             ^- CPU_ARCH_ABI64 (7)
-#               `------------------------------- CPU_TYPE_X86 (1)
+- !bin "|oooo'oxxx|oooo'oooo|oooo'oooo|oooo'ooox|"
+#              ^^^                             ^- CPU_ARCH_ABI64 (7)
+#                `------------------------------- CPU_TYPE_X86 (1)
 # machine specifier (defined in /usr/include/mach/machine.h )
-- !bin |oooo'ooxx|oooo'oooo|oooo'oooo|oooo'oooo|
-#              ^^------------------------------- CPU_SUBTYPE_I386_ALL (3)
-- !hex 01 00 00 00 # type of file
-- !hex 04 00 00 00 # number of load commands
-- !hex 70 05 00 00 # size of load commands
-- !hex 00 20 00 00 # flags
-- !hex 00 00 00 00 # reserved
+- !bin "|oooo'ooxx|oooo'oooo|oooo'oooo|oooo'oooo|"
+#               ^^------------------------------- CPU_SUBTYPE_I386_ALL (3)
+- !ui32le 1 # type of file: MH_OBJECT (1)
+- !ui32le 4 # number of load commands
+- !ui32le 1'392 # size of load commands
+- !ui32le 0x2000 # flags: MH_SUBSECTIONS_VIA_SYMBOLS (safe to divide sections int subsections)
+- !0 4 # reserved
 
 - !assert-index 32
 
-# load command (lc) 0 : struct segment_command_64
-- !hex 19 00 00 00 # LC_SEGMENT_64
-- !hex f8 04 00 00 # command size
-- !hex 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 # segment name
-- !hex 00 00 00 00 00 00 00 00 # mem addr of segment
-- !hex 6d 02 00 00 00 00 00 00 # mem size of segment
-- !hex 90 05 00 00 00 00 00 00 # file offset of segment (1424)
-- !hex 6d 02 00 00 00 00 00 00 # file size of segment (amount to map into mem)
-- !hex 07 00 00 00 # maximum VM protection
-- !hex 07 00 00 00 # initial VM protection
-- !hex 0f 00 00 00 # number of sections in segment (15)
-- !hex 00 00 00 00 # flags
+# <load command 0> : struct segment_command_64
+- !ui32le 0x19 # LC_SEGMENT_64 ('segments' are mapped directly to virtual memory)
+- !i32le 1272 # command size
+- !0 16 # segment name (blank)
+- !i32le 0,0 # 64bit mem vm addr of segment
+- !i32le 621,0 # 64bit size of segment in bytes
+- !i32le 1424,0 # 64bit file offset of segment (1424)
+- !i32le 621,0 # 64bit file size of segment (amount to map into mem)
+- !i32le 7 # maximum VM protection (read(1)|write(2)|execute(4))
+- !i32le 7 # initial VM protection (read(1)|write(2)|execute(4))
+- !i32le 15 # number of sections in segment
+- !0 4 # flags (none)
 
 - !assert-index 104
 
-# lc 0 section 0 : struct section_64
+# <load command 0, section 0> : struct section_64
 - !hex 5f 5f 74 65 78 74 00 00 00 00 00 00 00 00 00 00 # section name
 - !hex 5f 5f 54 45 58 54 00 00 00 00 00 00 00 00 00 00 # parent segment name
 - !hex 00 00 00 00 00 00 00 00 # mem addr of this sect
