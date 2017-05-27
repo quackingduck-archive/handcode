@@ -50,5 +50,3 @@ assert_construction('bin', "|xxxx'xxxo|xxxo'xxox|", 'feed')
 assert.deepEqual(
   constructors.c_assert_index('0x4'),
   { assert_index: true, value: 4 })
-
-console.log('ok')
