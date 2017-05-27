@@ -53,6 +53,8 @@ const c_f32le = (s) => _c_int(s, 'FloatLE', 4)
 const c_f64be = (s) => _c_int(s, 'DoubleBE', 8)
 const c_f64le = (s) => _c_int(s, 'DoubleLE', 8)
 
+const c_0 = (s) => Buffer.alloc(Number(s))
+
 // directives
 
 const c_assert_index = (s) => {
@@ -60,6 +62,7 @@ const c_assert_index = (s) => {
 }
 
 module.exports = {
+  c_0,
   c_bin,
   c_hex,
   c_utf8,
