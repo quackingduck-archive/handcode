@@ -1,4 +1,4 @@
-const { step, finalize } = require('./hex_dump')
+const { step, finalize } = require('./dump')
 
 const assert = require('assert')
 const hb = (s) => Buffer.from(s.replace(/\s/g, ''), 'hex')
