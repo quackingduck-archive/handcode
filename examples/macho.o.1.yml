@@ -1,4 +1,4 @@
---- !hc
+--- !hc1
 
 # mach-o object generated with
 # $ cc -g -c -x c -o macho.o -  <<< 'int foo() { return 42; }'

@@ -9,6 +9,8 @@ const tag_constructors = require('./tag_constructors')
 const hex_decode = require('./hex_decode')
 const dump = require('./dump')
 
+const doc_tag = '!hc1'
+
 const st = (n, c) => (
   new yaml.Type(n, {
     kind: 'scalar',
@@ -22,7 +24,7 @@ const sts = Object.keys(tag_constructors).map((name) => {
   return st(tag_name, tag_constructors[name])
 })
 
-sts.push(new yaml.Type('!hc', {
+sts.push(new yaml.Type(doc_tag, {
   kind: 'sequence',
   resolve: (x) => (x !== null),
   construct: (x) => x,
@@ -35,9 +37,9 @@ const schema = yaml.Schema.create(sts)
 // take output and error streams as args?
 // throw error if error?
 function compile (s) {
-  const magic_number = '--- !hc\n'
+  const magic_number = `--- ${doc_tag}\n`
   if (s.slice(0, magic_number.length) !== magic_number) {
-    console.error('error: input must begin with --- !hc')
+    console.error(`error: input must begin with --- ${doc_tag}`)
     process.exit(1)
   }
 
@@ -88,7 +90,7 @@ if (require.main === module) {
     const out = process.stdout
     const rs = fs.createReadStream(b)
     let mem = dump.initialize()
-    out.write('--- !hc\n')
+    out.write(`--- ${doc_tag}\n`)
     rs.on('data', (b) => { mem = dump.step(mem, b); dump.write_yaml(mem.indexed_slices, out) })
     rs.on('end', () => { dump.finalize(mem); dump.write_yaml(mem.indexed_slices, out) })
   } else {

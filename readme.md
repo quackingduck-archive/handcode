@@ -3,14 +3,14 @@ Binary analysis and synthesis tool
 Install
 
 ```
-$ npm install -g handcode
+$ npm i -g handcode
 ```
 
 Synthesize
 
 ```
-$ hc <<-END | hexdump
---- !hc
+$ hc1 <<-END | hexdump
+--- !hc1
 - !bin 11111110
 - !ui8 237
 - !hex fa ce
@@ -22,8 +22,8 @@ END
 Analyze
 
 ```
-$ hc d <<< 'the quick brown fox jumped over the lazy dog'
---- !hc
+$ hc1 d <<< 'the quick brown fox jumped over the lazy dog'
+--- !hc1
 - !assert-index 0
 - !hex 74 68 65 20 71 75 69 63 6b 20 62 72 6f 77 6e 20
 - !assert-index 16

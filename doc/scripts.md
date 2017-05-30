@@ -26,7 +26,7 @@ $ xxd -p examples/arp.pcap | pbcopy
 then we create a the handcode file `arp.pacp.yml` and paste
 
 ```
---- !hc
+--- !hc1
 - !hex >
   d4c3b2a102000400000000000000000000000400010000007679f6580493
   07002a0000002a000000ffffffffffffa45e60df2e1b0806000108000604
@@ -40,7 +40,7 @@ then we create a the handcode file `arp.pacp.yml` and paste
 when you run `hc` on this file you will get the same bytes as the original file
 
 ```
-$ cmp <(hc arp.pacp.yml) examples/arp.pcap
+$ cmp <(hc1 arp.pacp.yml) examples/arp.pcap
 $ # no output means files have no differences
 ```
 
@@ -65,7 +65,7 @@ now you can do some analysis on the data by adding comments, and changing the re
 you can always check your analysis by resynthesizing the bytestream
 
 ```
-$ cmp <(hc arp.pacp.yml) examples/arp.pcap
+$ cmp <(hc1 arp.pacp.yml) examples/arp.pcap
 $ # no output means files have no differences
 ```
 

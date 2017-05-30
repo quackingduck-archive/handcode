@@ -5,6 +5,8 @@ function lpad (s, l, c = '0') {
   return s
 }
 
+const doc_tag = '!hc1'
+
 // 11111110 => 1111'1110
 function nibbly_byte_str (s) {
   return s.replace(/\d{4}/, "$&'")
@@ -26,7 +28,7 @@ const is_valid_utf8 = require('utf-8-validate')
 function hex_decode (s) {
   s = s.replace(/\s/g, '')
   let b = Buffer.from(s, 'hex')
-  console.log('--- !hc')
+  console.log('--- ' + doc_tag)
   console.log(d_bin(b))
   if (is_valid_utf8(b)) {
     s = '- !utf8 ' + util.inspect(b.toString())

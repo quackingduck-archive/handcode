@@ -4,7 +4,7 @@
   "version": "1.2.0",
   "main": "index.js",
   "bin": {
-    "hc": "cli.js"
+    "hc1": "cli.js"
   },
   "directories": {
     "doc": "doc",

@@ -12,12 +12,14 @@ const st = (n, c) => (
   })
 )
 
+const doc_tag = '!hc1'
+
 const sts = Object.keys(tag_constructors).map((name) => {
   const tag_name = name.replace('c_', '!').replace(/_/g, '-')
   return st(tag_name, tag_constructors[name])
 })
 
-sts.push(new yaml.Type('!hc', {
+sts.push(new yaml.Type(doc_tag, {
   kind: 'sequence',
   resolve: (x) => (x !== null),
   construct: (x) => x,
@@ -30,9 +32,9 @@ const schema = yaml.Schema.create(sts)
 // take output and error streams as args?
 // throw error if error?
 function compile (s) {
-  const magic_number = '--- !hc\n'
+  const magic_number = `--- ${doc_tag}\n`
   if (s.slice(0, magic_number.length) !== magic_number) {
-    console.error('error: input must begin with --- !hc')
+    console.error(`error: input must begin with --- #{doc_tag}`)
     process.exit(1)
   }
 

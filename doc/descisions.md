@@ -47,3 +47,7 @@ the goal formatting is to convey "8 bit cells of memory, the x's mark the bits t
 ---
 
 considered support for octal values and decided to punt
+
+---
+
+first line of file must be exactly `--- !hc1`. this is yaml for "the following document is of this type (i.e. should match this spec)". these 8 bytes also serve as the file's "magic number".

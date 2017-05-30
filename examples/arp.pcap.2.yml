@@ -1,4 +1,4 @@
---- !hc
+--- !hc1
 
 # run this command to confirm the generated binary matches the original bit for bit
 # $ cmp <(hc examples/arp.pcap.2.yml) examples/arp.pcap
