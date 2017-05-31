@@ -3,8 +3,8 @@
 const indexStr = x => x.toString(10)
 const byteStr = x => (((x = x.toString(16)), x.length === 2 ? x : '0' + x))
 const bytesStr = xs => Array.from(xs).map(byteStr).join(' ')
-const indexLine = x => `- !assert-index: ${indexStr(x)}\n`
-const hexLine = (xs) => `- !hex: ${bytesStr(xs)}\n`
+const indexLine = x => `- !assert-index ${indexStr(x)}\n`
+const hexLine = (xs) => `- !hex ${bytesStr(xs)}\n`
 
 function write_yaml (indexed_slices, out = process.stdout) {
   while (indexed_slices.length) {
