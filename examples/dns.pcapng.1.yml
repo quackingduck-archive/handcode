@@ -1,0 +1,176 @@
+--- !hc1
+
+# pcapng format: http://xml2rfc.tools.ietf.org/cgi-bin/xml2rfc.cgi?url=https://raw.githubusercontent.com/pcapng/pcapng/master/draft-tuexen-opsawg-pcapng.xml&modeAsFormat=html/ascii&type=ascii#rfc.section.3
+
+# run this command to confirm the generated binary matches the original bit for bit
+# $ cmp <(hc examples/dns.pcapng.1.yml) dns.pcapng
+
+- !assert-index 0 # block 1
+
+# block header
+- !hex 0a 0d 0d 0a # type = section header
+- !hex 1c 00 00 00 # total len = 28
+                   #  these 4 bytes will appear again at the end of the content
+                   #  len is inclusive of header and trailer
+
+# section header
+- !hex 4d 3c 2b 1a # byte order "magic" = little endian
+- !hex 01 00 00 00 # major version, minor version = 1, 0
+- !hex ff ff ff ff ff ff ff ff # len = -1 (not used)
+
+# block trailer
+- !hex 1c 00 00 00 # total len
+
+# ---
+
+- !assert-index 28 # block 2
+
+# header
+- !hex 01 00 00 00 # type = interface description
+- !hex 5c 00 00 00 # total len = 92
+
+# interface description
+- !hex 01 00 # link type = ethernet
+- !hex 00 00 # reserved
+- !hex 00 00 04 00 # snaplen max = 262,144
+# interface description : options ...
+- !hex 02 00 03 00
+- !hex 65 6e 30 00 09 00 01 00 06 00 00 00 0c 00 2d 00
+- !hex 4d 61 63 20 4f 53 20 58 20 31 30 2e 31 32 2e 35
+- !hex 2c 20 62 75 69 6c 64 20 31 36 46 37 33 20 28 44
+- !hex 61 72 77 69 6e 20 31 36 2e 36 2e 30 29 00 00 00
+- !hex 00 00 00 00
+
+# trailer
+- !hex 5c 00 00 00 # len
+
+# ---
+
+- !assert-index 120 # block 3
+
+# block header
+- !hex 06 00 00 00 # type = enhanced packet
+- !hex 74 00 00 00 # len = 116
+
+# packet header
+- !hex 00 00 00 00 # if id
+- !hex 51 51 05 00 # ts
+- !hex b1 6e 45 55 # ts
+- !hex 51 00 00 00 # len = 81
+- !hex 51 00 00 00 # len
+
+# ethernet
+- !hex d8 30 62 48 b7 00 # dst mac
+- !hex a4 5e 60 df 2e 1b # src mac
+- !hex 08 00 # protocol = ip
+
+# ip
+- !hex 45 00 00 43 # ipv4, header len,  len = 67
+- !hex 29 ea 00 00 # id, frag
+- !hex ff # ttl
+- !hex 11 # protocol = udp
+- !hex 7b bb # checksum
+- !hex 0a 00 01 04 # src
+- !hex 0a 00 01 01 # dst
+
+# udp
+- !hex d1 84 # src port
+- !hex 00 35 # dst port
+- !hex 00 2f # len
+- !hex fd 82 # checksum
+
+# dns
+- !hex 38 1e # tx id
+- !hex 01 00 # flags = std query
+- !hex 00 01 # count of question resource records (RR) = 1
+- !hex 00 00 # count of answers RRs
+- !hex 00 00 # count of authority RRs
+- !hex 00 00 # count of additional RRs
+
+# dns query resource record
+- !hex 06 # section len = 6
+- !hex 73 65 63 75 72 65
+- !hex 0a # section len = 10
+- !hex 73 63 72 65 65 6e 68 65 72 6f # ascii
+- !hex 03 # section len = 3
+- !hex 63 6f 6d # ascii
+- !hex 00 # end of sections
+- !hex 00 01 # type = A (host address)
+- !hex 00 01 # class = IN (internet)
+
+# ethernet trailer
+- !hex 00 00 00
+
+# block trailer
+- !hex 74 00 00 00
+
+# ---
+
+# block 4
+
+- !hex 06 00 00 00 # packet
+- !hex b4 00 00 00 # len
+
+- !hex 00 00 00 00
+- !hex 51 51 05 00
+- !hex 6e a0 45 55
+- !hex 91 00 00 00
+- !hex 91 00 00 00
+
+- !hex a4 5e 60 df 2e 1b
+- !hex d8 30 62 48 b7 00
+- !hex 08 00
+
+- !hex 45 00 00 83
+- !hex 14 0f 00 00
+- !hex 40
+- !hex 11
+- !hex 50 57
+- !hex 0a 00 01 01 # src ip
+- !hex 0a 00 01 04 # dst ip
+
+- !hex 00 35 # src port
+- !hex d1 84 # dest port
+- !hex 00 6f
+- !hex 15 52
+
+# dns
+- !hex 38 1e # tx id
+- !hex 81 80 # flags = standard query response
+- !hex 00 01 # question RR count
+- !hex 00 04 # answer RR count
+- !hex 00 00
+- !hex 00 00
+
+# question RR
+- !hex 06
+- !hex 73 65 63 75 72 65
+- !hex 0a
+- !hex 73 63 72 65 65 6e 68 65 72 6f
+- !hex 03
+- !hex 63 6f 6d
+- !hex 00
+- !hex 00 01
+- !hex 00 01
+
+# answer RR 1
+- !hex c0 0c # pointer to name used above
+- !hex 00 01 # type
+- !hex 00 01 # class
+- !hex 00 00 00 0d # ttl
+- !hex 00 04 # data length
+- !hex 36 a5 49 74 # data (ip address)
+
+# answer RR 2
+- !hex c0 0c 00 01 00 01 00
+- !assert-index 368
+- !hex 00 00 0d 00 04 34 14 6c 42 c0 0c 00 01 00 01 00
+- !assert-index 384
+- !hex 00 00 0d 00 04 34 36 f2 0f c0 0c 00 01 00 01 00
+- !assert-index 400
+- !hex 00 00 0d 00 04 34 ce b0 63
+
+- !hex 00 00 00
+
+# block trailer
+- !hex b4 00 00 00
