@@ -31,14 +31,19 @@ const schema = yaml.Schema.create(sts)
 
 // take output and error streams as args?
 // throw error if error?
-function compile (s) {
-  const magic_number = `--- ${doc_tag}\n`
-  if (s.slice(0, magic_number.length) !== magic_number) {
-    console.error(`error: input must begin with --- #{doc_tag}`)
-    process.exit(1)
+function compile (s, out_stream = process.stdout, err_stream = process.stderr) {
+  const error = (status, ...msglines) => {
+    const e = new Error(msglines.join('\n'))
+    e.status = status
+    throw e
   }
 
   try {
+    const magic_number = `--- ${doc_tag}\n`
+    if (s.slice(0, magic_number.length) !== magic_number) {
+      error('bad-doctype', 'Incorrect or missing doctype. First line must be:', magic_number.trim())
+    }
+
     // xs is array of buffers,
     // terminates early on unrecognized tag
     const xs = yaml.load(s, {
@@ -46,8 +51,7 @@ function compile (s) {
       listener: (event, state) => {
         if (event === 'close' && state.tag === '?') {
           // lines are zero indexed
-          console.error('no tag for element on line', state.line + 1)
-          process.exit(1)
+          error('missing-tag', `no tag for element on line ${state.line + 1}`)
         }
       },
     })
@@ -56,18 +60,24 @@ function compile (s) {
     for (let b of xs) {
       if (b.assert_index) {
         if (i !== b.value) {
-          console.error(`expected byte index to be: ${b.value} but was ${i}`)
-          process.exit(1)
+          error('assert-index-failed', `expected byte index to be: ${b.value} but was ${i}`)
         }
       } else {
-        process.stdout.write(b)
+        out_stream.write(b)
         i += b.length
       }
     }
   } catch (e) {
-    if (e.message) console.error(e.message)
-    else console.error(e.stack || String(e))
+    const werror = (str) => err_stream.write(str + '\n')
+    if (e.message) {
+      werror(e.message)
+      return e.status || 'error'
+    } else {
+      werror((e.stack || String(e)).trim())
+      return 'error'
+    }
   }
+  return 'ok'
 }
 
 module.exports = compile

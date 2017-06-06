@@ -30,6 +30,7 @@ if (require.main === module) {
     // compile
     const input_filename = a || '/dev/stdin'
     const s = fs.readFileSync(input_filename, 'utf8')
-    compile(s)
+    const status = compile(s, process.stdout, process.stderr)
+    if (status !== 'ok') process.exit(1)
   }
 }
