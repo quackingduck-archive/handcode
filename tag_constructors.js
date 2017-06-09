@@ -9,7 +9,7 @@ const split = (s) => s.split(',')
 const xo = (s) => s.toLowerCase().replace(/x/g, '1').replace(/o/g, '0')
 
 const c_bin = (s) => {
-  s = xo(strip(s).replace(/\|/g, ''))
+  s = xo(strip(s).replace(/[|.]/g, ''))
   if (s.length % 8 !== 0) throw new Error('bin values must be byte aligned')
   const b = Buffer.allocUnsafe(s.length / 8)
   for (let i = 0; i < b.length; i++) {

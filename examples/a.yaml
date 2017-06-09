@@ -7,7 +7,8 @@
 - !hex fe ed fa ce #           feedface   11111110 11101101 11111010 11001110
 
 # one/zero bit patterns
-- !bin 1111 1110 1110 1101 #   feed       11111110 11101101
+- !bin 1111 1110 1110 1101    #   feed       11111110 11101101
+- !bin .|xxxx'xxxo|xxxo'xxox| #   feed       11111110 11101101
 
 # utf8 strings
 - !utf8 hello           # 68656c6c6f        01101000 01100101 01101100 01101100 01101111
