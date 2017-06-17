@@ -1,14 +1,22 @@
 --- !hc1
 
 # n.b. all tags generate whole-byte (byte aligned) values,
-# no tag produces sub-byte (e.g. half byte) values
+# sub-byte values can only be used within `bits` tag,
+# (and that tag must have a byte-aligned bit length)
 
 # hex digit pairs
-- !hex fe ed fa ce #           feedface   11111110 11101101 11111010 11001110
+- !hex fe ed fa ce # feedface
 
 # one/zero bit patterns
-- !bin 1111 1110 1110 1101    #   feed       11111110 11101101
-- !bin .|xxxx'xxxo|xxxo'xxox| #   feed       11111110 11101101
+- !bin 1111 1110 1110 1101 # feed
+- !bin .|xxxx'xxxo|xxxo'xxox| # feed
+
+# bitfields
+- !bits # 6d
+  - !length (8) # in bits
+  - !o # always off in ascii
+  - !ui (2) 3  # column index (this column has the lower case letters)
+  - !ui (5) 13 # row index, 'm' also the 13th letter
 
 # utf8 strings
 - !utf8 hello           # 68656c6c6f        01101000 01100101 01101100 01101100 01101111

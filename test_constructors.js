@@ -48,6 +48,33 @@ assert_construction('bin', '1111 1110 1110 1101', 'feed')
 assert_construction('bin', "|xxxx'xxxo|xxxo'xxox|", 'feed')
 assert_construction('bin', ".|xxxx'xxxo|xxxo'xxox|", 'feed')
 
+// pair of length and then value
+const {c_b} = constructors
+assert.deepEqual(c_b('x'), [1, 1])
+assert.deepEqual(c_b('xo'), [2, 2])
+assert.deepEqual(c_b('xx'), [2, 3])
+
+const {c_ui} = constructors
+assert.deepEqual(c_ui('(1) 1'), [1, 1])
+assert.deepEqual(c_ui('(4) 1'), [4, 1])
+
+const {c_length} = constructors
+assert.deepEqual(c_length('(1)'), 1)
+assert.deepEqual(c_length('(4)'), 4)
+
+const {c_bits} = constructors
+assert.deepEqual(c_bits([
+  8, // length
+  [1, 1],
+  [1, 0],
+  [1, 1],
+  [1, 0],
+  [1, 1],
+  [1, 0],
+  [1, 1],
+  [1, 0],
+]), new Buffer('aa', 'hex'))
+
 assert.deepEqual(
   constructors.c_assert_index('0x4'),
   { assert_index: true, value: 4 })

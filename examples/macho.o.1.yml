@@ -14,8 +14,8 @@
 - !hex cf fa ed fe # magic number
 # cpu specifier (defined in /usr/include/mach/machine.h )
 - !bin |oooo'oxxx|oooo'oooo|oooo'oooo|oooo'ooox|
-#             ^^^                             ^- CPU_ARCH_ABI64 (7)
-#               `------------------------------- CPU_TYPE_X86 (1)
+#             ^^^                             ^- CPU_ARCH_ABI64 (1)
+#               `------------------------------- CPU_TYPE_X86 (7)
 # machine specifier (defined in /usr/include/mach/machine.h )
 - !bin |oooo'ooxx|oooo'oooo|oooo'oooo|oooo'oooo|
 #              ^^------------------------------- CPU_SUBTYPE_I386_ALL (3)

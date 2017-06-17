@@ -55,6 +55,57 @@ const c_f64le = (s) => _c_int(s, 'DoubleLE', 8)
 
 const c_0 = (s) => Buffer.alloc(Number(s))
 
+// support multiple bits?
+const c_b = (s) => {
+  s = xo(strip(s))
+  const n = Number('0b' + s) // risk: could be NaN
+  const l = s.length
+  return [ l, n ]
+}
+
+const c_ui = (s) => {
+  const [l, v] = s.match(/\((\d+)\)\s+([^\s]+)/).slice(1)
+  return [ Number(l), Number(v) ]
+}
+
+const c_length = (s) => {
+  const x = s.match(/\((\d+)\)/)
+  if (!x || x.length < 2) {
+    throw new Error(
+      `can't parse length from: ${s}\nexample length value: (16)`)
+  }
+  return Number(x[1])
+}
+
+const _c_bits = (xs, byte_order = 'BE') => {
+  const [len, ...vals] = xs
+  // risk: len must be 8, 16, 32
+  let ret = 0
+  for (let [l, v] of vals) {
+    ret = ret << l
+    ret = ret | v
+  }
+  let b = Buffer.alloc(Number(len / 8))
+  let fn = 'writeUInt' + len + (len > 8 ? byte_order : '')
+  b[fn](ret, 0)
+  return b
+}
+
+const c_bits_be = (xs) => _c_bits(xs, 'BE')
+c_bits_be.kind = 'sequence'
+const c_bits_le = (xs) => _c_bits(xs, 'LE')
+c_bits_le.kind = 'sequence'
+
+const c_bits = (xs) => c_bits_be(xs)
+c_bits.kind = 'sequence'
+
+// off bit
+const c_o = () => [1, 0]
+c_o.resolve = (x) => x === null
+// on bit
+const c_x = () => [1, 1]
+c_x.resolve = (x) => x === null
+
 // directives
 
 const c_assert_index = (s) => {
@@ -62,6 +113,14 @@ const c_assert_index = (s) => {
 }
 
 module.exports = {
+  c_b,
+  c_ui,
+  c_o,
+  c_x,
+  c_length,
+  c_bits,
+  c_bits_be,
+  c_bits_le,
   c_0,
   c_bin,
   c_hex,

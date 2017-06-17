@@ -6,8 +6,8 @@ const tag_constructors = require('./tag_constructors')
 
 const st = (n, c) => (
   new yaml.Type(n, {
-    kind: 'scalar',
-    resolve: (x) => (x !== null),
+    kind: c.kind || 'scalar',
+    resolve: c.resolve || ((x) => (x !== null)),
     construct: c,
   })
 )
@@ -63,6 +63,7 @@ function compile (s, out_stream = process.stdout, err_stream = process.stderr) {
           error('assert-index-failed', `expected byte index to be: ${b.value} but was ${i}`)
         }
       } else {
+        // risk: may not be buffer if bitfield-only tag like !ui used outside of bitfield
         out_stream.write(b)
         i += b.length
       }
