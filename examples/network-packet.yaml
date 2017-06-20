@@ -1,0 +1,59 @@
+--- !hc1
+# # link layer envelope - ethernet frame
+- !hex c4'e9'84'87'60'28 # destination addr - router wifi card
+- !hex a4'5e'60'df'2e'1b # source addr - local wifi card
+- !i16be 2048 # type/protocol - ip
+
+# network layer envelope - ip datagram
+- !bits # first byte is two 4 bit numbers
+  - !ui (4) 4 # version number
+  - !ui (4) 5 # length of header in 4 byte words
+- !bits # type of service
+  - !ui (6) 0 # differentiated services code point
+  - !ui (2) 0 # explicit congestion notification
+- !ui16be 64 # total length
+- !hex d0 03 # id
+- !bits # fragment fields
+  - !o # unused
+  - !o # do not fragment
+  - !o # more fragments to follow
+  - !o (13) # fragment offset
+- !hex 40 # ttl
+- !hex 06 # protocol
+- !hex 2c ee # header checksum
+- !ui8 192,168,00,101 # source addr
+- !ui8 192,30,252,154 # destination addr
+
+# transport layer envelope - tcp segment
+- !ui16be 59295 # source port
+- !ui16be 80 # destination port
+- !ui32be 1588273765 # sequence number
+- !ui32be 0 # acknowledgement number
+- !bits
+  - !ui (4) 11 # data offset, i.e. size of tcp header in 4byte words
+  - !o (6) # unused
+  - !o # URG
+  - !o # ACK
+  - !o # PSH
+  - !o # RST
+  - !x # SYN - synchronize sequence numbers
+  - !o # FIN
+- !ui16be 65535 # receive window size
+- !hex 58 23 # checksum
+- !0 (2) # urgent pointer (unused in practice)
+# additonal tcp options
+- !i8 2 # option 1: maximum segment size
+- !i8 4 # option length in bytes
+- !i16be 1460 # value
+- !i8 1 # no-op option (for alignment)
+- !i8 3 # option 2: window scale factor
+- !i8 3 # option length in bytes
+- !i8 5 # value - num of bits to left shift original receive window size
+- !i8 1,1 # no-op options (for alignment)
+- !i8 8 # option 3: tcp timestamps
+- !i8 10 # option length in bytes
+- !ui32be 978173381 # local timestamp
+- !ui32be 0 # last seen remote timestamp
+- !i8 4 # option 4: selective acknowledgement permitted
+- !i8 2 # len
+- !0 (2) # two bytes of zero padding for alignment
