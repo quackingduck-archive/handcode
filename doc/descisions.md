@@ -51,3 +51,7 @@ considered support for octal values and decided to punt
 ---
 
 first line of file must be exactly `--- !hc1`. this is yaml for "the following document is of this type (i.e. should match this spec)". these 8 bytes also serve as the file's "magic number".
+
+---
+
+started a spec. the code is not the spec. unspecified functionality should be considered to work by accident not intention.
