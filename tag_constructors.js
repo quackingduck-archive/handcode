@@ -53,7 +53,10 @@ const c_f32le = (s) => _c_int(s, 'FloatLE', 4)
 const c_f64be = (s) => _c_int(s, 'DoubleBE', 8)
 const c_f64le = (s) => _c_int(s, 'DoubleLE', 8)
 
-const c_0 = (s) => Buffer.alloc(Number(s))
+const c_0 = (s) => {
+  s = s.replace(/[()]/g, '')
+  return Buffer.alloc(Number(s))
+}
 
 // support multiple bits?
 const c_b = (s) => {

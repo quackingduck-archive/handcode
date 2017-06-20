@@ -39,8 +39,11 @@ assert_construction('ui32be', '65534', '0000fffe')
 // float and doubles
 assert_construction('f32be', '0.5', '3f000000')
 assert_construction('f32le', '0.5', '0000003f')
-
 assert_construction('f64be', '0.5', '3fe0000000000000')
+
+// nulls/zeros
+assert_construction('0', '(5)', '0000000000') // preferred
+assert_construction('0', '5', '0000000000') // left for backwards compatibility
 
 // plain binary bytes
 assert_construction('bin', '1111 1110 1110 1101', 'feed')
@@ -48,25 +51,24 @@ assert_construction('bin', '1111 1110 1110 1101', 'feed')
 assert_construction('bin', "|xxxx'xxxo|xxxo'xxox|", 'feed')
 assert_construction('bin', ".|xxxx'xxxo|xxxo'xxox|", 'feed')
 
-// pair of length and then value
-const {c_b} = constructors
-assert.deepEqual(c_b('x'), [1, 1])
-assert.deepEqual(c_b('xo'), [2, 2])
-assert.deepEqual(c_b('xx'), [2, 3])
-
-const {c_ui} = constructors
-assert.deepEqual(c_ui('(1) 1'), [1, 1])
-assert.deepEqual(c_ui('(4) 1'), [4, 1])
-
-const {c_length, c_len} = constructors
+// bitfield component constructors
+const {c_length, c_len} = constructors // length directive
 assert.deepEqual(c_length('(1)'), 1)
 assert.deepEqual(c_length('(4)'), 4)
 assert.deepEqual(c_len('(4)'), 4) // shorthand
+const {c_b} = constructors // bit strings
+assert.deepEqual(c_b('x'), [1, 1])
+assert.deepEqual(c_b('xo'), [2, 2])
+assert.deepEqual(c_b('xx'), [2, 3])
+const {c_ui} = constructors // arbitary length unsigned ints
+assert.deepEqual(c_ui('(1) 1'), [1, 1])
+assert.deepEqual(c_ui('(4) 1'), [4, 1])
 
+// bitfield constructor
 const {c_bits} = constructors
-assert.deepEqual(c_bits([
-  8, // length
-  [1, 1],
+assert.deepEqual(c_bits([ // takes sequence
+  8, // length must be first element
+  [1, 1], // the rest of the elements must be length/val pairs
   [1, 0],
   [1, 1],
   [1, 0],
@@ -74,6 +76,7 @@ assert.deepEqual(c_bits([
   [1, 0],
   [1, 1],
   [1, 0],
+  // length must equal sum of all length elements
 ]), new Buffer('aa', 'hex'))
 
 assert.deepEqual(
