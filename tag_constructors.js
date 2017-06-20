@@ -112,8 +112,9 @@ c_bits_le.kind = 'sequence'
 const c_bits = (xs) => c_bits_be(xs)
 c_bits.kind = 'sequence'
 
+const _c_xo_rexp = /\((\d+)\)/
 const _c_xo = (s, v) => {
-  const m = s.match(/\((\d+)\)/)
+  const m = s.match(_c_xo_rexp)
   if (!m || m.length < 2) {
     throw new Error(
       `can't parse length from: ${s}\nexample length value: (4)`)
@@ -123,7 +124,7 @@ const _c_xo = (s, v) => {
   for (let x = l; x; x--) n += String(v)
   return [l, Number('0b' + n)]
 }
-const _c_xo_resolve = (x) => x === null || /\(\d\)/.test(x)
+const _c_xo_resolve = (x) => x === null || _c_xo_rexp.test(x)
 // off bit
 const c_o = (s) => s ? _c_xo(s, 0) : [1, 0]
 c_o.resolve = _c_xo_resolve
