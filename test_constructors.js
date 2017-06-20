@@ -58,9 +58,10 @@ const {c_ui} = constructors
 assert.deepEqual(c_ui('(1) 1'), [1, 1])
 assert.deepEqual(c_ui('(4) 1'), [4, 1])
 
-const {c_length} = constructors
+const {c_length, c_len} = constructors
 assert.deepEqual(c_length('(1)'), 1)
 assert.deepEqual(c_length('(4)'), 4)
+assert.deepEqual(c_len('(4)'), 4) // shorthand
 
 const {c_bits} = constructors
 assert.deepEqual(c_bits([

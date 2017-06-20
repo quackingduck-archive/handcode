@@ -118,6 +118,7 @@ module.exports = {
   c_o,
   c_x,
   c_length,
+  c_len: c_length,
   c_bits,
   c_bits_be,
   c_bits_le,
