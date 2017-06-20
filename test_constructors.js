@@ -60,6 +60,11 @@ const {c_b} = constructors // bit strings
 assert.deepEqual(c_b('x'), [1, 1])
 assert.deepEqual(c_b('xo'), [2, 2])
 assert.deepEqual(c_b('xx'), [2, 3])
+const {c_o, c_x} = constructors // explicit bits
+assert.deepEqual(c_o(null), [1, 0])
+assert.deepEqual(c_x(null), [1, 1])
+assert.deepEqual(c_o('(2)'), [2, 0])
+assert.deepEqual(c_x('(3)'), [3, 7])
 const {c_ui} = constructors // arbitary length unsigned ints
 assert.deepEqual(c_ui('(1) 1'), [1, 1])
 assert.deepEqual(c_ui('(4) 1'), [4, 1])

@@ -58,7 +58,6 @@ const c_0 = (s) => {
   return Buffer.alloc(Number(s))
 }
 
-// support multiple bits?
 const c_b = (s) => {
   s = xo(strip(s))
   const n = Number('0b' + s) // risk: could be NaN
@@ -113,14 +112,24 @@ c_bits_le.kind = 'sequence'
 const c_bits = (xs) => c_bits_be(xs)
 c_bits.kind = 'sequence'
 
+const _c_xo = (s, v) => {
+  const m = s.match(/\((\d+)\)/)
+  if (!m || m.length < 2) {
+    throw new Error(
+      `can't parse length from: ${s}\nexample length value: (4)`)
+  }
+  let l = Number(m[1])
+  let n = ''
+  for (let x = l; x; x--) n += String(v)
+  return [l, Number('0b' + n)]
+}
+const _c_xo_resolve = (x) => x === null || /\(\d\)/.test(x)
 // off bit
-const c_o = () => [1, 0]
-c_o.resolve = (x) => x === null
+const c_o = (s) => s ? _c_xo(s, 0) : [1, 0]
+c_o.resolve = _c_xo_resolve
 // on bit
-const c_x = () => [1, 1]
-c_x.resolve = (x) => x === null
-
-// directives
+const c_x = (s) => s ? _c_xo(s, 1) : [1, 1]
+c_x.resolve = _c_xo_resolve
 
 const c_assert_index = (s) => {
   return { assert_index: true, value: Number(strip(s)) }
