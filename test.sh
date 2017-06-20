@@ -9,7 +9,7 @@ function test_cli {
   cmp <(xxd -r -p <<< "$1") <(./cli.js /tmp/hc.yaml)
 }
 
-# bitfield - binary values
+# bitfield - binary values, length asserted
 test_cli '6d' <<-HC1
 --- !hc1
 - !bits
@@ -19,11 +19,10 @@ test_cli '6d' <<-HC1
   - !b oxxox # row
 HC1
 
-# bitfield
+# bitfield - off shorthand, unsigned ints, no length asserted
 test_cli '6d' <<-HC1
 --- !hc1
 - !bits
-  - !length (8)
   - !o # always off in ascii
   - !ui (2) 3  # column index (this column has the lower case letters)
   - !ui (5) 13 # row index, 'm' also the 13th letter

@@ -81,12 +81,23 @@ const c_length = (s) => {
 }
 
 const _c_bits = (xs, byte_order = 'BE') => {
-  const [len, ...vals] = xs
-  // risk: len must be 8, 16, 32
+  // const [len, ...vals] = xs
+  let len = 0
+  let assert_len
+  if (typeof xs[0] === 'number') assert_len = xs.shift()
+  if (assert_len && assert_len % 8 !== 0) {
+    throw new Error(
+      `asserted bitfield length ${assert_len} is not multiple of 8`)
+  }
   let ret = 0
-  for (let [l, v] of vals) {
+  for (let [l, v] of xs) {
+    len += l
     ret = ret << l
     ret = ret | v
+  }
+  if (len === 0) throw new Error(`bitfield length must be greater than zero`)
+  if (len % 8 !== 0) {
+    throw new Error(`bitfield length ${len} is not multiple of 8`)
   }
   let b = Buffer.alloc(Number(len / 8))
   let fn = 'writeUInt' + len + (len > 8 ? byte_order : '')

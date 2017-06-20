@@ -67,7 +67,7 @@ assert.deepEqual(c_ui('(4) 1'), [4, 1])
 // bitfield constructor
 const {c_bits} = constructors
 assert.deepEqual(c_bits([ // takes sequence
-  8, // length must be first element
+  8, // optional "assert length" directive
   [1, 1], // the rest of the elements must be length/val pairs
   [1, 0],
   [1, 1],
@@ -76,7 +76,19 @@ assert.deepEqual(c_bits([ // takes sequence
   [1, 0],
   [1, 1],
   [1, 0],
-  // length must equal sum of all length elements
+  // length must equal asserted length
+]), new Buffer('aa', 'hex'))
+// without assert length
+assert.deepEqual(c_bits([
+  [1, 1],
+  [1, 0],
+  [1, 1],
+  [1, 0],
+  [1, 1],
+  [1, 0],
+  [1, 1],
+  [1, 0],
+  // length must be divisible by 8
 ]), new Buffer('aa', 'hex'))
 
 assert.deepEqual(
