@@ -60,6 +60,15 @@ function hex_decode (s) {
     console.log('- !i16be ' + i)
     if (i !== ui) console.log('- !ui16be ' + ui)
   }
+  if (b.length === 1) {
+    let i = b[0]
+    if (i <= 127) {
+      console.log('- !i8 ' + i.toString())
+    } else {
+      console.log('- !i8 ' + ((i - 256)).toString())
+      console.log('- !ui8 ' + i.toString())
+    }
+  }
   // todo: floats, more sizes of int
 }
 
