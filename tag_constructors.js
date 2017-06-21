@@ -56,7 +56,7 @@ const _c_ui64 = (s, endian) => {
   const xs = split(strip(s))
   let bufs = []
   for (let x of xs) {
-    const n = bignum(x)
+    const n = bignum(x) // risk: does not support hex
     bufs.push(n.toBuffer({ endian: endian, size: 8 }))
   }
   return Buffer.concat(bufs)
@@ -94,8 +94,8 @@ const c_length = (s) => {
   return Number(x[1])
 }
 
+// risk: bitfield must be less than 32bits
 const _c_bits = (xs, byte_order = 'BE') => {
-  // const [len, ...vals] = xs
   let len = 0
   let assert_len
   if (typeof xs[0] === 'number') assert_len = xs.shift()
@@ -114,7 +114,11 @@ const _c_bits = (xs, byte_order = 'BE') => {
     throw new Error(`bitfield length ${len} is not multiple of 8`)
   }
   let b = Buffer.alloc(Number(len / 8))
-  let fn = 'writeUInt' + len + (len > 8 ? byte_order : '')
+  let fn = (len === 8)
+    ? 'writeUInt8'
+    : (ret >= 0)
+      ? 'writeUInt' + len + byte_order
+      : 'writeInt' + len + byte_order
   b[fn](ret, 0)
   return b
 }

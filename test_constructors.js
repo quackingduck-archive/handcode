@@ -34,6 +34,7 @@ assert_construction('i32be', '-2', 'fffffffe')
 assert_construction('ui32le', '65534', 'feff0000')
 assert_construction('ui32be', '65534', '0000fffe')
 
+// risk: does not support hex notation for numbers
 assert_construction('ui64le', '65534', 'feff000000000000')
 assert_construction('ui64be', '65534', '000000000000fffe')
 assert_construction('ui64be', "18'446'744'073'709'551'615", 'ffffffffffffffff')
@@ -71,6 +72,7 @@ assert.deepEqual(c_o('(10)'), [10, 0])
 const {c_ui} = constructors // arbitary length unsigned ints
 assert.deepEqual(c_ui('(1) 1'), [1, 1])
 assert.deepEqual(c_ui('(4) 1'), [4, 1])
+assert.deepEqual(c_ui('(8) 0x80'), [8, 128])
 
 // bitfield constructor
 const {c_bits} = constructors

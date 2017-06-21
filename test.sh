@@ -37,6 +37,14 @@ test_cli '00ff' <<-HC1
   - !ui (8) 0    # 00
 HC1
 
+test_cli '80000400' <<-HC1
+--- !hc1
+- !bits
+  - !ui (8) 0x80
+  - !ui (16) 0x0004
+  - !o (8) # unset
+HC1
+
 # hex
 test_cli 'cafebabe' <<-HC1
 --- !hc1
