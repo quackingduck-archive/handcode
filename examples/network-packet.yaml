@@ -18,8 +18,8 @@
   - !o # do not fragment
   - !o # more fragments to follow
   - !o (13) # fragment offset
-- !hex 40 # ttl
-- !hex 06 # protocol
+- !ui8 64 # time to live
+- !hex 06 # protocol - tcp
 - !hex 2c ee # header checksum
 - !ui8 192,168,00,101 # source addr
 - !ui8 192,30,252,154 # destination addr
