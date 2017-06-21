@@ -1,6 +1,8 @@
 /* eslint-disable camelcase */
 /* eslint comma-dangle: ["error", "always-multiline"] */
 
+const bignum = require('bignum')
+
 const strip = (s) => s.replace(/(\s|')/g, '') // whitespace and ' char
 const split = (s) => s.split(',')
 
@@ -49,6 +51,19 @@ const c_ui32be = (s) => _c_int(s, 'UInt32BE', 4)
 
 const c_f32be = (s) => _c_int(s, 'FloatBE', 4)
 const c_f32le = (s) => _c_int(s, 'FloatLE', 4)
+
+const _c_ui64 = (s, endian) => {
+  const xs = split(strip(s))
+  let bufs = []
+  for (let x of xs) {
+    const n = bignum(x)
+    bufs.push(n.toBuffer({ endian: endian, size: 8 }))
+  }
+  return Buffer.concat(bufs)
+}
+
+const c_ui64be = (s) => _c_ui64(s, 'big')
+const c_ui64le = (s) => _c_ui64(s, 'little')
 
 const c_f64be = (s) => _c_int(s, 'DoubleBE', 8)
 const c_f64le = (s) => _c_int(s, 'DoubleLE', 8)
@@ -160,6 +175,8 @@ module.exports = {
   c_i32be,
   c_ui32le,
   c_ui32be,
+  c_ui64le,
+  c_ui64be,
   c_f32be,
   c_f32le,
   c_f64be,

@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "js-yaml": "^3.8.3",
-    "utf-8-validate": "^3.0.1"
+    "utf-8-validate": "^3.0.1",
+    "bignum": "^0.12.5"
   },
   "devDependencies": {},
   "scripts": {
