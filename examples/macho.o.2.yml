@@ -3,67 +3,72 @@
 # mach-o object generated with
 # $ cc -g -c -x c -o macho.o -  <<< 'int foo() { return 42; }'
 
-# run this command to check that hadcoded binary matches original
-# $ cmp <(hc macho.o.2.yml) macho.o
-
-# structures defined in /usr/include/mach-o/loader.h
-
-- !assert-index 0
-
-# <header> : struct mach_header_64
-- !hex cffaedfe # magic number
-                  # original 32bit version:   feedface
-                  # then 64bit revision:      feedfacf
-                  # little endian revision:   cffaedfe (byte order reversed)
-# cpu specifier (defined in /usr/include/mach/machine.h )
-- !bin "|oooo'oxxx|oooo'oooo|oooo'oooo|oooo'ooox|"
-#              ^^^                             ^- CPU_ARCH_ABI64 (7)
-#                `------------------------------- CPU_TYPE_X86 (1)
-# machine specifier (defined in /usr/include/mach/machine.h )
-- !bin "|oooo'ooxx|oooo'oooo|oooo'oooo|oooo'oooo|"
-#               ^^------------------------------- CPU_SUBTYPE_I386_ALL (3)
-- !ui32le 1 # type of file: MH_OBJECT (1)
-- !ui32le 4 # number of load commands
+# <header>
+- !hex cffaedfe # Mach-O, 64bit, little-endian
+- !bits-le
+  - !ui (8) 1 # 64bit ABI
+  - !ui (24) 7 # x86 ISA
+- !ui32le 3 # x86_64 ISA
+- !ui32le 1 # regular linkable object file type
+- !ui32le 4 # count of load commands
 - !ui32le 1'392 # size of load commands
-- !ui32le 0x2000 # flags: MH_SUBSECTIONS_VIA_SYMBOLS (safe to divide sections int subsections)
+- !bits-le
+  - !o (18) # unset
+  - !x # allow sections to be divided into individual blocks
+  - !o (13) # unset
 - !0 4 # reserved
-
+# </header>
 - !assert-index 32
 
-# <load command 0> : struct segment_command_64
-- !ui32le 0x19 # LC_SEGMENT_64 ('segments' are mapped directly to virtual memory)
-- !i32le 1272 # command size
-- !0 16 # segment name (blank)
-- !i32le 0,0 # 64bit mem vm addr of segment
-- !i32le 621,0 # 64bit size of segment in bytes
-- !i32le 1424,0 # 64bit file offset of segment (1424)
-- !i32le 621,0 # 64bit file size of segment (amount to map into mem)
-- !i32le 7 # maximum VM protection (read(1)|write(2)|execute(4))
-- !i32le 7 # initial VM protection (read(1)|write(2)|execute(4))
+# <lc0>
+- !ui32le 0x19 # segment load command
+- !i32le 1'272 # size
+- !0 16 # because this is an intermediate file, segment has no name
+- !ui64le 0 # vm addr of segment
+- !ui64le 621 # size of segment
+- !ui64le 1424 # file offset of segment
+- !ui64le 621 # 64bit file size of segment (amount to map into mem)
+- !bits-le # maximum VM protection
+  - !o (29) # unset
+  - !x # allow read
+  - !x # allow write
+  - !x # allow execute
+- !bits-le # initial VM protection
+  - !o (29) # unset
+  - !x # allow read
+  - !x # allow write
+  - !x # allow execute
 - !i32le 15 # number of sections in segment
 - !0 4 # flags (none)
 
 - !assert-index 104
 
-# <load command 0, section 0> : struct section_64
-- !hex 5f 5f 74 65 78 74 00 00 00 00 00 00 00 00 00 00 # section name
-- !hex 5f 5f 54 45 58 54 00 00 00 00 00 00 00 00 00 00 # parent segment name
-- !hex 00 00 00 00 00 00 00 00 # mem addr of this sect
-- !hex 0b 00 00 00 00 00 00 00 # size
-- !hex 90 05 00 00 # file offset (1424)
-- !hex 04 00 00 00 # section alignment (power of 2)
-- !hex 00 00 00 00 # file offset of relocation entires
-- !hex 00 00 00 00 # number of relocation entires
-- !hex 00 04 00 80 # flags (section type and attributes)
-- !hex 00 00 00 00 # reserved (for offset or index)
-- !hex 00 00 00 00 # reserved (for count or sizeof)
-- !hex 00 00 00 00 # reserved
+# <lc0-s0> __TEXT,__text - i.e. the executable machine code section
+- !utf8 __text # section name
+- !0 (10) # pad to 16 bytes
+- !utf8 __TEXT # parent segment name
+- !0 (10) # pad to 16 bytes
+- !ui64le 0 # mem addr
+- !ui64le 11 # size
+- !ui32le 1424 # file offset
+- !ui32le 4 # section alignment: 2^4 = 16
+- !ui32le 0 # file offset of relocation entires
+- !ui32le 0 # number of relocation entires
+- !bits-le
+  - !ui (8) 0x80 # section contains only machine instructions
+  - !ui (16) 0x0004 # section contains some machine instructions
+  - !o (8) # unset
+- !0 (4) # offset
+- !0 (4) # size of stubs?
+- !0 (4) # reserved
 
 - !assert-index 184
 
-# lc 1 section 1 : struct section_64
-- !hex 5f 5f 64 65 62 75 67 5f 73 74 72 00 00 00 00 00 # section name
-- !hex 5f 5f 44 57 41 52 46 00 00 00 00 00 00 00 00 00 # parent segment name
+# <lc0-s1>
+- !utf8 __debug_str # section name
+- !hex 00 00 00 00 00 # pad to 16 bytes
+- !utf8 __DWARF # parent segment name
+- !hex 00 00 00 00 00 00 00 00 00 # pad to 16 bytes
 - !hex 0b 00 00 00 00 00 00 00 # mem addr of this sect
 - !hex 51 00 00 00 00 00 00 00 # size
 - !hex 9b 05 00 00 # file offset
@@ -278,7 +283,7 @@
 - !hex 00 00 00 00 # reserved (for offset or index)
 - !hex 00 00 00 00 # reserved (for count or sizeof)
 - !hex 00 00 00 00 # reserved
-
+# </load command 0>
 - !assert-index 1304
 
 # load command 2 : version_min_command
@@ -321,23 +326,29 @@
 - !hex 00 00 00 00 # offset to local relocation entries
 - !hex 00 00 00 00 # number of local relocation entries
 
-# data section
+- !assert-index 1424 # offset of first segment and section
 
-- !assert-index 1424 # segment
-- !hex 55 48 89 e5 b8 2a 00 00 00 5d c3 41 70 70 6c 65
+# lc0s0: __TEXT,__text
+- !hex 55               # pushq	%rbp
+- !hex 48 89 e5         # movq	%rsp, %rbp
+- !hex b8 2a 00 00 00   # movl	$0x2a, %eax
+- !hex 5d               # popq $rpb
+- !hex c3               # retq
+
+- !hex 41 70 70 6c 65
 - !hex 20 4c 4c 56 4d 20 76 65 72 73 69 6f 6e 20 38 2e
 - !hex 31 2e 30 20 28 63 6c 61 6e 67 2d 38 30 32 2e 30
 - !hex 2e 34 32 29 00 2d 00 2f 55 73 65 72 73 2f 6d 79
 - !hex 6c 65 73 62 79 72 6e 65 2f 50 72 6f 6a 65 63 74
 - !hex 73 2f 63 00 66 6f 6f 00 69 6e 74 00
 
-- !assert-index 1516 # segment
+- !assert-index 1516 # section
 - !hex 01 11 01 25
 - !hex 0e 13 05 03 0e 10 17 1b 0e 11 01 12 06 00 00 02
 - !hex 2e 00 11 01 12 06 40 18 03 0e 3a 0b 3b 0b 49 13
 - !hex 3f 19 00 00 03 24 00 03 0e 3e 0b 0b 0b 00 00 00
 
-- !assert-index 1568 # segement
+- !assert-index 1568 # section
 - !hex 47 00 00 00 04 00 00 00 00 00 08 01 00 00 00 00
 - !hex 0c 00 2a 00 00 00 00 00 00 00 2c 00 00 00 00 00
 - !hex 00 00 00 00 00 00 0b 00 00 00 02 00 00 00 00 00
@@ -351,51 +362,57 @@
 - !hex 89 73 88 0b 2c 00 00 00 49 00 00 00 01 00 00 00
 - !hex 2a 00 00 00 00 00 00 00
 
-- !assert-index 1704 # segment
+- !assert-index 1704 # section
 - !hex 48 53 41 48 01 00 00 00
 - !hex 01 00 00 00 00 00 00 00 0c 00 00 00 00 00 00 00
 - !hex 01 00 00 00 01 00 06 00 ff ff ff ff
 
-- !assert-index 1740 # segment
+- !assert-index 1740 # section
 - !hex 48 53 41 48
 - !hex 01 00 00 00 01 00 00 00 00 00 00 00 0c 00 00 00
 - !hex 00 00 00 00 01 00 00 00 01 00 06 00 ff ff ff ff
 
-- !assert-index 1776 # segment
+- !assert-index 1776 # section
 - !hex 48 53 41 48 01 00 00 00 01 00 00 00 01 00 00 00
 - !hex 14 00 00 00 00 00 00 00 03 00 00 00 01 00 06 00
 - !hex 03 00 05 00 04 00 0b 00 00 00 00 00 30 80 88 0b
 - !hex 34 00 00 00 4d 00 00 00 01 00 00 00 43 00 00 00
 - !hex 24 00 00 00 00 00 00
 
-- !assert-index 1847 # segment
+- !assert-index 1847 # section
 - !hex 48 53 41 48 01 00 00 00 01
 - !hex 00 00 00 00 00 00 00 0c 00 00 00 00 00 00 00 01
 - !hex 00 00 00 07 00 06 00 ff ff ff ff 00 00 00 00 00
 
-- !assert-index 1888 # segment
+- !assert-index 1888 # section
 - !hex 00 00 00 00 00 00 00 00 0b 00 00 00 00 00 00 01
 - !hex 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 
-- !assert-index 1920 # segment
+- !assert-index 1920 # section
 - !hex 14 00 00 00 00 00 00 00 01 7a 52 00 01 78 10 01
 - !hex 10 0c 07 08 90 01 00 00 24 00 00 00 1c 00 00 00
 - !hex f0 fd ff ff ff ff ff ff 0b 00 00 00 00 00 00 00
 - !hex 00 41 0e 10 86 02 43 0d 06 00 00 00 00 00 00 00
 
-- !assert-index 1984 # segment
+- !assert-index 1984 # section
 - !hex 39 00 00 00 02 00 1e 00 00 00 01 01 fb 0e 0d 00
 - !hex 01 01 01 01 00 00 00 01 00 00 01 00 3c 73 74 64
 - !hex 69 6e 3e 00 00 00 00 00 00 09 02 00 00 00 00 00
 - !hex 00 00 00 01 05 0d 0a 90 02 02 00 01 01
+
+# load command 1 segment data
 
 - !assert-index 2045 # segment
 - !hex 00 00 00
 - !hex 2b 00 00 00 01 00 00 06 1e 00 00 00 01 00 00 06
 - !hex 00 00 00 00 01 00 00 06 2b 00 00 00 01 00 00 06
 
-- !assert-index 2080 # segment
+# load command 2 segment data
+
+- !assert-index 2080
 - !hex 01 00 00 00 0f 01 00 00 00 00 00 00 00 00 00 00
 
-- !assert-index 2096 # segment
+# load command 3 segment data
+
+- !assert-index 2096
 - !hex 00 5f 66 6f 6f 00 00 00
